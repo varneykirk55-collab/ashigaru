@@ -9,6 +9,7 @@ var camera: Camera3D
 var dead_time := 0.0
 var sensitivity := 0.002
 var footsteps := 0.0
+var auto_sprint := false
 var crouching := false
 var crouch_blend := 0.0
 var body_shape: CollisionShape3D
@@ -40,10 +41,12 @@ func _unhandled_input(event: InputEvent) -> void:
 		camera.rotation.x=clampf(camera.rotation.x-event.relative.y*sensitivity,-1.35,1.35)
 	if Input.mouse_mode!=Input.MOUSE_MODE_CAPTURED: return
 	if event.is_action_pressed("fire"): weapons.attack(camera.global_position,-camera.global_basis.z)
+	if event.is_action_pressed("auto_sprint"): auto_sprint=not auto_sprint
 	if event.is_action_pressed("reload"): weapons.reload()
 	if event.is_action_pressed("switch"): weapons.switch_weapon()
 func _physics_process(delta: float) -> void:
 	if game.paused: return
+	health.tick(delta)
 	if health.value<=0:
 		if is_instance_valid(death_body): death_body.tick(delta,0,false,weapons)
 		camera.rotation.z=lerpf(camera.rotation.z,0.16,1-exp(-5*delta))
@@ -66,7 +69,7 @@ func _physics_process(delta: float) -> void:
 	body_shape.position.y=body_shape.shape.height/2
 	head_hitbox.position.y=head_height()
 	camera.position.y=1.65-crouch_blend*0.43
-	var speed := 2.2 if crouching else (7.0 if Input.is_action_pressed("sprint") else 4.5)
+	var speed := 2.2 if crouching else (7.0 if (Input.is_action_pressed("sprint") or auto_sprint) else 4.5)
 	velocity.x=direction.x*speed; velocity.z=direction.z*speed
 	if not is_on_floor(): velocity.y-=20*delta
 	elif Input.is_action_just_pressed("jump"): velocity.y=7
@@ -80,7 +83,7 @@ func _physics_process(delta: float) -> void:
 	if input.length()>0 and is_on_floor():
 		footsteps-=delta
 		if footsteps<=0:
-			game.sounds.play_sound("step"); footsteps=0.32 if speed>5 else 0.47
+			game.sounds.play_sound("step_"+game.arena.surface_at(global_position)); footsteps=0.32 if speed>5 else 0.47
 func _die(attacker: Node) -> void:
 	dead_time=3
 	weapons.visible=false
@@ -97,11 +100,11 @@ func respawn() -> void:
 	if is_instance_valid(death_body): death_body.get_parent().queue_free()
 	collision_layer=1; head_hitbox.collision_layer=2
 	crouching=false; crouch_blend=0
-	global_position=game.spawns.location(team)
-	rotation.y=0 if team==0 else PI
+	global_position=game.spawns.location(team,game.actors)
+	rotation.y=atan2(global_position.x,global_position.z)
 	camera.rotation=Vector3.ZERO
 	velocity=Vector3.ZERO
-	health.reset()
+	health.reset(); health.protection=3.0
 	weapons.musket=Musket.new()
 	weapons.visible=true
 

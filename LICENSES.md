@@ -7,3 +7,5 @@
 - Godot engine itself: MIT License, Copyright (c) 2014-present Godot Engine contributors; Copyright (c) 2007-2014 Juan Linietsky, Ariel Manzur. Engine license text: https://github.com/godotengine/godot/blob/4.6.3-stable/LICENSE.txt.
 
 No licensing claim is made on the user's supplied models beyond their authorized use in this project. Decide the repository's overall source-code license before distributing the project publicly.
+
+Palace pass: `assets/palace/*`, source Blender modules, garden details and all added footstep/wind/interior audio are original project-generated content. No external environment textures or audio sources were added. The added synthesized audio is also offered under CC0 1.0 Universal.

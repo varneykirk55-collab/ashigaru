@@ -21,10 +21,10 @@ func run() -> void:
 	check(game.menu.faction==1,"Ronin selection updates deployment")
 	game.start_match(0)
 	await frames(4)
-	check(game.actors.size()==8 and game.player.team==0,"Samurai match starts 4 versus 4")
+	check(game.actors.size()==10 and game.player.team==0,"Samurai match starts 5 versus 5")
 	check(game.player.camera.current and game.match_state.active,"first person camera and match active")
 	for actor in game.actors:
-		if actor!=game.player: actor.set_physics_process(false); actor.global_position=Vector3(17,0,17)
+		if actor!=game.player: actor.set_physics_process(false); actor.health.protection=0; actor.global_position=Vector3(17,0,17)
 	var player: PlayerController=game.player
 	player.global_position=Vector3(0,0.05,8)
 	player.rotation=Vector3.ZERO
@@ -46,7 +46,7 @@ func run() -> void:
 	check(player.velocity.y>0,"jump uses upward velocity")
 	await frames(80)
 	check(player.is_on_floor(),"gravity returns player to ground")
-	var enemy: BotController=game.actors[4]
+	var enemy: BotController=game.actors[5]
 	enemy.global_position=Vector3(0,0.05,-2)
 	player.global_position=Vector3(0,0.05,3)
 	await frames(4)
@@ -74,7 +74,7 @@ func run() -> void:
 	await frames(152)
 	check(player.weapons.sword_model.visible and not player.weapons.gun_model.visible,"weapon switch finishes on the katana")
 	check(player.weapons.musket.loaded and player.weapons.musket.reserve==17,"background reload completes while katana equipped and consumes one reserve")
-	enemy.respawn(); enemy.global_position=Vector3(0,0.05,1)
+	enemy.respawn(); enemy.health.protection=0; enemy.global_position=Vector3(0,0.05,1)
 	await frames(3)
 	aim=(enemy.global_position+Vector3(0,1.3,0)-player.camera.global_position).normalized()
 	check(player.weapons.attack(player.camera.global_position,aim) and enemy.health.value==45,"katana damages enemy at close range")
@@ -86,7 +86,8 @@ func run() -> void:
 	check(enemy.health.value==0,"second katana cut kills")
 	var ally: BotController=game.actors[1]
 	check(not DamageSystem.hit(ally,100,player) and ally.health.value==100,"allies protected from friendly damage")
-	enemy.respawn()
+	enemy.respawn(); enemy.health.protection=0
+	player.health.protection=0
 	DamageSystem.hit(player,100,enemy)
 	check(player.health.value==0 and game.match_state.scores[1]==1,"enemy kill scores for Ronin and kills player")
 	await frames(190)
@@ -102,7 +103,7 @@ func run() -> void:
 	check(not game.match_state.active and game.menu.root.visible,"score limit shows match results")
 	game.start_match(1,true)
 	await frames(3)
-	check(game.player.team==1 and game.match_state.scores==[0,0] and game.actors.size()==8,"restart resets scores and supports opposite faction")
+	check(game.player.team==1 and game.match_state.scores==[0,0] and game.actors.size()==10,"restart resets scores and supports opposite faction")
 	game.match_state.time_left=0.01
 	await frames(3)
 	check(not game.match_state.active,"timer can end match")
@@ -113,7 +114,7 @@ func run() -> void:
 	await frames(3)
 	player=game.player
 	for actor in game.actors:
-		if actor!=player: actor.set_physics_process(false); actor.position=Vector3(17,0.1,17)
+		if actor!=player: actor.set_physics_process(false); actor.health.protection=0; actor.position=Vector3(17,0.1,17)
 	player.position=Vector3(0,0.1,3)
 	Input.action_press("crouch")
 	await frames(30)
@@ -121,7 +122,7 @@ func run() -> void:
 	Input.action_release("crouch")
 	await frames(35)
 	check(player.crouch_blend<0.05 and player.camera.position.y>1.6,"standing blends back from crouch")
-	enemy=game.actors[4]; enemy.position=Vector3(0,0.1,-2)
+	enemy=game.actors[5]; enemy.position=Vector3(0,0.1,-2)
 	await frames(3)
 	var head_ray := DamageSystem.trace(player,player.camera.global_position,(enemy.global_position+Vector3(0,enemy.head_height(),0)-player.camera.global_position).normalized(),20)
 	check(not head_ray.is_empty() and head_ray.collider==enemy and head_ray.get("headshot",false),"physical head hitbox identifies a headshot")
@@ -167,15 +168,15 @@ func run() -> void:
 	game.player.global_position=Vector3(18,0.1,18)
 	var starting_positions: Array[Vector3]=[]
 	for actor in game.actors: starting_positions.append(actor.global_position)
-	await frames(5400)
+	await frames(10800)
 	var moved := 0
 	for i in range(1,game.actors.size()):
 		if game.actors[i].global_position.distance_to(starting_positions[i])>2: moved+=1
 	check(moved>=5,"bots autonomously traverse arena")
-	check(game.match_state.scores[0]>0 and game.match_state.scores[1]>0,"both bot teams independently score kills over 90 seconds")
+	check(game.match_state.scores[0]>0 and game.match_state.scores[1]>0,"both bot teams independently score kills over 180 seconds")
 	print("BOT SCORES: ",game.match_state.scores)
 	game.match_state.score_limit=maxi(game.match_state.scores[0],game.match_state.scores[1])+1
-	await frames(1800)
+	await frames(3600)
 	check(not game.match_state.active and game.menu.root.visible,"autonomous combat reaches score-limit results without forced kills")
 	print("RESULT: %d checks, %d failures, %d skipped" % [checks,failures,skipped])
 	game.free()

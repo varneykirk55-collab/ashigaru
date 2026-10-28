@@ -21,13 +21,13 @@ func setup(g: Node3D) -> void:
 	damage_overlay.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	damage_overlay.mouse_filter=Control.MOUSE_FILTER_IGNORE
 	score=label("",26,Vector2(390,26),Vector2(500,60)); score.horizontal_alignment=HORIZONTAL_ALIGNMENT_CENTER
-	label("COURTYARD OF ASH  /  TEAM DEATHMATCH",13,Vector2(40,30),Vector2(340,30))
+	label("PALACE OF ASH  /  TEAM DEATHMATCH",13,Vector2(40,30),Vector2(340,30))
 	status=label("",23,Vector2(40,620),Vector2(600,80))
 	prompt=label("",20,Vector2(390,510),Vector2(500,70)); prompt.horizontal_alignment=HORIZONTAL_ALIGNMENT_CENTER
 	confirmation=label("",18,Vector2(440,398),Vector2(400,38)); confirmation.horizontal_alignment=HORIZONTAL_ALIGNMENT_CENTER
 	feed=label("",17,Vector2(870,105),Vector2(370,90)); feed.horizontal_alignment=HORIZONTAL_ALIGNMENT_RIGHT
 	hit=label("+",28,Vector2(620,337),Vector2(40,40)); hit.horizontal_alignment=HORIZONTAL_ALIGNMENT_CENTER
-	label("WASD  MOVE   SHIFT  SPRINT   SPACE  JUMP   CTRL  CROUCH\nLMB  ATTACK   RMB  AIM   R  RELOAD   Q / WHEEL  SWITCH   ESC  PAUSE",13,Vector2(675,634),Vector2(580,65))
+	label("WASD MOVE   SHIFT SPRINT   CAPS AUTO-SPRINT   CTRL CROUCH\nSPACE JUMP   LMB ATTACK   RMB AIM\nR RELOAD   Q / WHEEL SWITCH   ESC PAUSE",13,Vector2(675,634),Vector2(580,65))
 	reload_bar=ProgressBar.new(); root.add_child(reload_bar)
 	reload_bar.position=Vector2(40,606); reload_bar.size=Vector2(300,5); reload_bar.show_percentage=false; reload_bar.mouse_filter=Control.MOUSE_FILTER_IGNORE
 func label(text: String, size: int, pos: Vector2, extent: Vector2) -> Label:
@@ -51,6 +51,7 @@ func _process(delta: float) -> void:
 	reload_bar.visible=m.remaining>0
 	reload_bar.value=(1-m.remaining/Musket.RELOAD_TIME)*100
 	prompt.text="RESPAWNING IN %d" % ceili(p.dead_time) if p.health.value<=0 else ("RELOADING  %.1fs" % m.remaining if m.remaining>0 else ("R  ·  RELOAD" if not m.loaded and m.reserve>0 else ("OUT OF POWDER  ·  Q FOR KATANA" if m.reserve==0 and not m.loaded else "")))
+	if p.health.protection>0 and p.health.value>0: prompt.text="SPAWN SHIELD %.1fs · FIRING ENDS PROTECTION" % p.health.protection
 	hurt=maxf(0,hurt-delta); hit_time=maxf(0,hit_time-delta);
 	confirmation.text=confirm_text if hit_time>0 else ""
 	feed_time=maxf(0,feed_time-delta)

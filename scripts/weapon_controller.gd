@@ -74,6 +74,7 @@ func attack(origin: Vector3, direction: Vector3) -> bool:
 		if not musket.fire():
 			reload()
 			return false
+		actor.health.protection=0
 		recoil=1
 		actor.game.sounds.play_sound("shot",origin)
 		actor.game.muzzle(origin+direction*1.0)
@@ -87,6 +88,7 @@ func attack(origin: Vector3, direction: Vector3) -> bool:
 		reload()
 		return true
 	if not katana.attack(): return false
+	actor.health.protection=0
 	animation=0.65
 	actor.game.sounds.play_sound("swing",origin)
 	var result := DamageSystem.trace(actor,origin,direction,Katana.RANGE)

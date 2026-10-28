@@ -33,7 +33,7 @@ func show_main() -> void:
 	text("ASHIGARU   /   PLAYABLE FOUNDATION",15)
 	text("SAMURAI\nWITH MUSKETS",58)
 	text("One shot. Five seconds. Close the distance.",21)
-	text("COURTYARD OF ASH\nA fictional clash of powder and steel.",17)
+	text("PALACE OF ASH\nA fictional clash of powder and steel.",17)
 	button("PLAY  →",show_factions)
 	button("SETTINGS",show_settings)
 	button("QUIT",func(): game.get_tree().quit())
@@ -46,8 +46,8 @@ func show_factions() -> void:
 	button("BACK",show_main)
 func show_deploy() -> void:
 	clear(); text("SAMURAI" if faction==0 else "RŌNIN",42)
-	text("4 versus 4  ·  100 health\nMusket: one shot, 5-second reload\nKatana: two cuts to defeat an enemy\nRespawn: 3 seconds",21)
-	button("MATCH: "+("QUICK  /  5 kills · 90 seconds" if short_match else "STANDARD  /  20 kills · 4 minutes"),func(): short_match=not short_match; show_deploy())
+	text("5 versus 5  ·  100 health\nMusket: one shot, 5-second reload\nKatana: two cuts to defeat an enemy\nRespawn: 3 seconds",21)
+	button("MATCH: "+("QUICK  /  10 kills · 3 minutes" if short_match else "STANDARD  /  40 kills · 8 minutes"),func(): short_match=not short_match; show_deploy())
 	button("ENTER THE COURTYARD  →",func(): root.hide(); game.start_match(faction,short_match))
 	button("BACK",show_factions)
 func show_settings() -> void:

@@ -2,7 +2,7 @@ class_name DamageSystem
 extends RefCounted
 static func hit(target: Node, amount: float, attacker: Node) -> bool:
 	if not is_instance_valid(target) or not target is CharacterBody3D: return false
-	if target.team == attacker.team or target.health.value <= 0: return false
+	if target.team == attacker.team or target.health.value <= 0 or target.health.protection>0: return false
 	if target.has_method("react_to_hit"): target.react_to_hit()
 	target.health.damage(amount, attacker)
 	return true

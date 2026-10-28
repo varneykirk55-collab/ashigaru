@@ -1,6 +1,7 @@
 class_name Geometry
 extends RefCounted
 static var surface_texture: NoiseTexture2D
+static var weapon_mesh_cache: Dictionary = {}
 static func mat(color: Color, metal := 0.0, rough := 0.8) -> StandardMaterial3D:
 	var m := StandardMaterial3D.new()
 	m.albedo_color = color
@@ -60,7 +61,23 @@ static func weapon(parent: Node3D, katana: bool) -> Node3D:
 	if katana:
 		model.rotation.z=-0.18
 		for child in model.find_children("*SCABBARD*", "Node3D", true, false): child.free()
+	_batch_weapon(model,"katana" if katana else "musket")
 	return pivot
+static func _batch_weapon(model: Node3D, key: String) -> void:
+	if not weapon_mesh_cache.has(key):
+		var groups: Dictionary={}
+		for part in model.find_children("*","MeshInstance3D",true,false):
+			for surface in range(part.mesh.get_surface_count()):
+				var material: Material=part.get_active_material(surface)
+				if not groups.has(material):
+					var builder := SurfaceTool.new(); builder.begin(Mesh.PRIMITIVE_TRIANGLES); builder.set_material(material); groups[material]=builder
+				groups[material].append_from(part.mesh,surface,model.global_transform.affine_inverse()*part.global_transform)
+		var meshes: Array[ArrayMesh]=[]
+		for builder in groups.values(): meshes.append(builder.commit())
+		weapon_mesh_cache[key]=meshes
+	for child in model.get_children(): child.free()
+	for mesh_data in weapon_mesh_cache[key]:
+		var part := MeshInstance3D.new(); part.mesh=mesh_data; model.add_child(part)
 static func warrior(parent: Node3D, team: int, asset: PackedScene = null) -> CharacterAnimator:
 	var root := CharacterAnimator.new()
 	parent.add_child(root)

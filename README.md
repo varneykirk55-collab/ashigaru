@@ -1,10 +1,10 @@
 # Samurai with Muskets
 
-A standalone Godot 4 first-person team deathmatch foundation. Select Samurai or Rōnin, fight in the Courtyard of Ash with a single-shot musket and a katana, die, respawn, and play through a score- or timer-ended match. Four combatants per side; seven autonomous bots fight the player and one another.
+A standalone Godot 4 first-person team deathmatch foundation. Select Samurai or Rōnin, fight in the Palace of Ash with a single-shot musket and a katana, die, respawn, and play through a score- or timer-ended match. Five combatants per side; nine autonomous bots fight the player and one another.
 
 This is a functional gameplay prototype, **not finished realistic character or environment art**. See [limitations](docs/TESTING.md).
 
-![First-person musket view](docs/gameplay.png)
+![First-person musket view](docs/palace-exterior.png)
 
 ## Play
 
@@ -17,7 +17,7 @@ Linux: extract the Linux ZIP, `chmod +x SamuraiWithMuskets.x86_64`, and run it f
 Source: install **Godot 4.6.3 Standard** (not .NET), import `project.godot`, then press F6 on `scenes/main.tscn`, or F5 to run the project. No plugins, packages, credentials, or Blender installation are needed to play. The supplied `.blend` sources are retained in `source_assets/`, excluded from Godot import; the game uses GLB versions.
 
 1. Play → choose a faction → choose Standard or Quick → Enter the Courtyard.
-2. Standard: 20 team kills or 4 minutes. Quick: 5 kills or 90 seconds.
+2. Standard: 40 team kills or 8 minutes. Quick: 10 kills or 3 minutes.
 3. Kills score for the attacker's team. Friendly fire causes no damage. Ties at the timer produce a draw.
 4. Results offer Fight Again or Return to Menu. Escape pauses the match and releases the mouse.
 
@@ -27,13 +27,14 @@ Source: install **Godot 4.6.3 Standard** (not .NET), import `project.godot`, the
 | Mouse | Look |
 | Shift / Space | Sprint / Jump |
 | Left Ctrl | Crouch / crouch movement |
+| Caps Lock | Toggle auto-sprint |
 | Left mouse | Fire / katana cut |
 | Right mouse | Aim musket |
 | Q or mouse wheel | Switch weapon |
 | R | Reload musket |
 | Escape | Pause / resume |
 
-Musket: 100 damage, one loaded shot, 18 reserve cartridges, a full five-second reload. Reload begins automatically after firing and continues in the background. Katana: 55 damage, 2.7 m reach, 0.8-second cooldown. Reload continues while the katana is selected. Each combatant has 100 health and respawns after three seconds. Respawning restores equipment. Settings persist in Godot's `user://settings.cfg`.
+Musket: 100 damage, one loaded shot, 18 reserve cartridges, a full five-second reload. Reload begins automatically after firing and continues in the background. Katana: 55 damage, 2.7 m reach, 0.8-second cooldown. Reload continues while the katana is selected. Each combatant has 100 health and respawns after three seconds. Respawning restores equipment and grants three seconds of protection; attacking ends it. Settings persist in Godot's `user://settings.cfg`.
 
 ## Cloud development
 
@@ -78,4 +79,4 @@ Both presets embed the PCK for single-file desktop distribution and exclude sour
 
 No networking is implemented. Attack/damage and match state are separated from UI and input to make a later authoritative networking layer possible; the current code is not network-ready.
 
-See [animation status and footage](docs/ANIMATION.md), [test evidence and limitations](docs/TESTING.md) and the original [project brief](docs/BRIEF.md).
+See [palace screenshots, navigation footage and performance report](docs/PALACE.md), [animation status and footage](docs/ANIMATION.md), [test evidence and limitations](docs/TESTING.md) and the original [project brief](docs/BRIEF.md).

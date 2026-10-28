@@ -13,6 +13,8 @@ var sensitivity := 0.002
 var player_kills := 0
 var player_deaths := 0
 var ambient: AudioStreamPlayer
+var garden_ambient: AudioStreamPlayer
+var interior_ambient: AudioStreamPlayer
 func _ready() -> void:
 	seed(7419)
 	_inputs()
@@ -27,10 +29,12 @@ func _ready() -> void:
 	ambient=AudioStreamPlayer.new(); add_child(ambient)
 	ambient.stream=load("res://assets/audio/ambient.wav"); ambient.volume_db=linear_to_db(maxf(0.001,sounds.volume))-20
 	ambient.stream.loop_mode=AudioStreamWAV.LOOP_FORWARD; ambient.play()
+	garden_ambient=_ambience("palace_wind")
+	interior_ambient=_ambience("palace_interior")
 	if "--capture" in OS.get_cmdline_user_args(): _capture()
 	if "--smoke-match" in OS.get_cmdline_user_args(): _smoke_match()
 func _inputs() -> void:
-	var bindings := {"forward":KEY_W,"back":KEY_S,"left":KEY_A,"right":KEY_D,"jump":KEY_SPACE,"sprint":KEY_SHIFT,"reload":KEY_R,"switch":KEY_Q,"pause":KEY_ESCAPE,"crouch":KEY_CTRL}
+	var bindings := {"forward":KEY_W,"back":KEY_S,"left":KEY_A,"right":KEY_D,"jump":KEY_SPACE,"sprint":KEY_SHIFT,"reload":KEY_R,"switch":KEY_Q,"pause":KEY_ESCAPE,"crouch":KEY_CTRL,"auto_sprint":KEY_CAPSLOCK}
 	for action in bindings:
 		InputMap.add_action(action)
 		var e := InputEventKey.new(); e.physical_keycode=bindings[action]; InputMap.action_add_event(action,e)
@@ -52,24 +56,29 @@ func _environment() -> void:
 	e.fog_enabled=true; e.fog_light_color=Color("909b93"); e.fog_density=0.003
 	var sun := DirectionalLight3D.new(); add_child(sun)
 	sun.rotation_degrees=Vector3(-38,-35,0); sun.light_color=Color("ffdfaa"); sun.light_energy=0.95; sun.shadow_enabled=true
+	sun.directional_shadow_mode=DirectionalLight3D.SHADOW_ORTHOGONAL; sun.directional_shadow_max_distance=90
 	menu_camera=Camera3D.new(); add_child(menu_camera)
-	menu_camera.position=Vector3(17,11,19); menu_camera.look_at(Vector3(0,1,0)); menu_camera.current=true
+	menu_camera.position=Vector3(64,30,66); menu_camera.look_at(Vector3(0,1,0)); menu_camera.current=true
 func start_match(team: int, quick := false) -> void:
 	for actor in actors:
 		remove_child(actor); actor.queue_free()
 	actors.clear(); spawns=SpawnManager.new()
 	paused=false; player_kills=0; player_deaths=0
-	match_state.scores=[0,0]; match_state.time_left=90 if quick else 240
-	match_state.score_limit=5 if quick else 20; match_state.active=true
+	match_state.scores=[0,0]; match_state.time_left=180 if quick else 480
+	match_state.score_limit=10 if quick else 40; match_state.active=true
 	player=preload("res://scenes/player.tscn").instantiate(); add_child(player); player.setup(self,team)
 	player.sensitivity=sensitivity; actors.append(player); player.respawn()
 	for faction in range(2):
-		for i in range(3 if faction==team else 4):
+		for i in range(4 if faction==team else 5):
 			var bot: BotController=preload("res://scenes/bot.tscn").instantiate(); add_child(bot); bot.setup(self,faction); actors.append(bot); bot.respawn()
 	menu.root.hide()
 	Input.mouse_mode=Input.MOUSE_MODE_CAPTURED
 func _process(delta: float) -> void:
 	if not paused: match_state.tick(delta)
+	if is_instance_valid(player) and is_instance_valid(interior_ambient):
+		var indoors: bool=arena.surface_at(player.global_position)=="wood"
+		interior_ambient.volume_db=lerpf(interior_ambient.volume_db,linear_to_db(maxf(0.001,sounds.volume))-18 if indoors else -65.0,delta*3)
+		garden_ambient.volume_db=lerpf(garden_ambient.volume_db,-60.0 if indoors else linear_to_db(maxf(0.001,sounds.volume))-15,delta*3)
 func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed("pause") and match_state.active:
 		set_paused(not paused)
@@ -150,6 +159,8 @@ func _capture() -> void:
 
 func _exit_tree() -> void:
 	if is_instance_valid(ambient): ambient.stop()
+	if is_instance_valid(garden_ambient): garden_ambient.stop()
+	if is_instance_valid(interior_ambient): interior_ambient.stop()
 
 func _smoke_match() -> void:
 	start_match(0)
@@ -158,3 +169,8 @@ func _smoke_match() -> void:
 	var ok: bool = match_state.scores[0]>0 and match_state.scores[1]>0
 	print("EXPORTED MATCH SMOKE: ","PASS" if ok else "FAIL", " scores=",match_state.scores)
 	get_tree().quit(0 if ok else 1)
+
+func _ambience(kind: String) -> AudioStreamPlayer:
+	var p := AudioStreamPlayer.new(); add_child(p)
+	p.stream=load("res://assets/audio/"+kind+".wav"); p.stream.loop_mode=AudioStreamWAV.LOOP_FORWARD
+	p.volume_db=-60; p.play(); return p

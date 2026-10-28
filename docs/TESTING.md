@@ -1,19 +1,15 @@
 # Current validation
 
-Godot 4.6.3 Standard on Linux, Xorg dummy display, Mesa llvmpipe OpenGL renderer. `DISPLAY=:9 ./tools/test.sh` runs the production scene, physics, input routing and combat systems: **52 checks passed, 0 failed, 0 skipped**.
+The palace pass runs 80 checks: the existing 52 combat/animation regressions and 28 palace-specific checks. Both display-backed suites passed with zero failures or skips. See [combat output](integration-output.txt), [palace output](palace-output.txt), and the [palace report](PALACE.md) for scope, footage and limitations.
 
-The suite verifies menus, both factions, first-person movement/mouse look, jump/gravity, musket damage and ammunition, five-second automatic reload while the katana is selected, recoil/reload/switch/swing motion, melee damage/cooldown, friendly-fire rules, crouch camera/collision transitions, physical headshot/body classification, hit reaction, visible death motion and completion, no combat or movement while dead, delayed body recycling, respawn, pause, navigation, timer/score results, restart and return to menu.
+Palace checks cover the baked engine navmesh, expanded route grid, ten combatants, non-overlapping spawns, damage protection, auto-sprint movement, physical player traversal through connected rooms/gardens/courtyard, reachable sight-blocking cover, distinct flanks, real bot visits inside the palace, cover selection and a full autonomous match. All nine bots visited the palace and the observed match ended 11–12.
 
-A fresh 90-second autonomous simulation uses normal bots, normal spawns and unmodified damage. Both sides score independently (31–33 in this run). The same match then continues to a score limit through normal combat and reaches its results screen without forced kills. Earlier controlled assertions reposition/freeze actors to isolate individual systems; they are not used as evidence of autonomous bot behavior.
+The regression suite retains movement, crouch, musket/katana damage, five-second background reload, weapon animation, headshot classification, hit feedback, visible death completion, no attacks while dead, respawn and complete score-ended matches. Headless runs explicitly skip two mouse-capture checks and are not equivalent to the display-backed run.
 
-[Raw integration output](integration-output.txt). Headless runs explicitly skip two mouse-capture checks and are not equivalent to the display-backed run.
+[Performance output](palace-performance.txt) measures 300 actual rendered frames after warm-up at 1280×720 with ten actors. Mesa llvmpipe is a CPU renderer, so these results do not establish dedicated-GPU or Windows performance. The benchmark is run separately from capture/tests to avoid competing game windows.
 
-The Windows x86-64 release is built using the retained, officially SHA-512-verified Godot templates. It has not been run natively on Windows (no Windows runner/Wine). The Linux x86-64 export is additionally smoke-tested with `--headless --fixed-fps 60 -- --smoke-match`; see [export output](export-smoke-output.txt). Both build ZIPs are CRC-checked and checksummed in `dist/SHA256SUMS.txt`.
+Windows and Linux exports use the already SHA-512-verified Godot 4.6.3 templates. The Linux binary is additionally smoke-tested; see [export output](export-smoke-output.txt). Native Windows execution is unverified. ZIP contents are CRC-checked and checksummed in `dist/SHA256SUMS.txt`.
 
-Footage and screenshots are rendered by the actual game, not mockups. The capture is scripted and labels its staged and autonomous segments. No human mouse-and-keyboard playtest was performed. See the [animation report](ANIMATION.md) for the status of all requested states and the missing Claude asset.
+Screenshots and navigation footage are real Godot output. Capture observes an idle player plus nine autonomous bots, not a human playtest. Earlier animation footage predates this palace overhaul and is retained as historical evidence.
 
-## Remaining limitations
-
-Character art, hands, scenery and synthesized audio remain provisional. Procedural poses and fall reactions are not authored skeletal animation or physics ragdolls. No foot/finger IK, detailed flintlock loading choreography, scene-aware corpse collisions, squad tactics, controller support or networking were introduced. Bot routing/targeting, arena geometry, weapon models and audio assets are retained.
-
-Melee remains a physical centre ray rather than a blade-volume sweep. The UI targets 1280×720; unusual aspect ratios, long-session resource profiling and native Windows behavior remain untested. The virtual display reports unsupported VSync changes. Short forced shutdowns can report still-active audio resources; normal test teardown stops audio explicitly.
+The virtual display warns about unsupported VSync changes. Short forced exits may report active audio resources at shutdown. Normal integration teardown explicitly stops audio. Long-session leak profiling remains unperformed.
