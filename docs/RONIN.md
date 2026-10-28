@@ -1,3 +1,5 @@
+> Historical integration report. Current first-person arms, ADS and reload presentation are described in [FIRST_PERSON.md](FIRST_PERSON.md).
+
 # Rōnin integration and animation validation
 
 The rōnin faction now uses the supplied **actual skinned character**, rather than the procedural placeholder. Samurai retain their existing armored placeholder. This is the same ASHIGARU project, palace, match system and canonical `main` branch.

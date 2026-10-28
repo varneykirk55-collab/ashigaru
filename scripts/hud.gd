@@ -57,7 +57,7 @@ func _process(delta: float) -> void:
 	feed_time=maxf(0,feed_time-delta)
 	damage_overlay.color=Color(0.55,0.05,0.02,hurt*0.6)
 	hit.text="◇" if "HEADSHOT" in confirm_text and hit_time>0 else ("×" if hit_time>0 else "+")
-	hit.modulate=Color("e4a45d") if hit_time>0 else Color(1,1,1,0.65)
+	hit.modulate=Color("e4a45d") if hit_time>0 else Color(1,1,1,0.65*(1-p.weapons.viewmodel.ads))
 	feed.visible=feed_time>0
 func message(text: String) -> void:
 	feed.text=text; feed_time=4

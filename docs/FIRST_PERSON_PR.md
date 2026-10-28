@@ -1,0 +1,9 @@
+# Replace primitive FPS hands and implement aligned musket iron sights
+
+The player's musket previously shifted sideways with a camera zoom, and reload moved the rigid gun with primitive hands. This change reuses the supplied rōnin's skinned arms, sleeves and finger bones for both factions' first-person view. Added rear/front sights align with the existing camera ray, the hip reticle fades during ADS, and the support hand performs a five-second reload choreography sampled from the existing ammo timer. Switching to katana preserves background reload and resumes the correct remaining animation state on return.
+
+The new presentation adapter owns arm/finger solving, grips, recoil, reload choreography and a transparent viewmodel viewport. Changes to shared controllers/HUD are limited to player presentation, ADS visibility and lifecycle reset. Bot presentation and AI, source characters/weapon assets, palace, damage, scoring, respawn and audio event hooks are preserved. No extra weapons or controller support.
+
+Validation and actual Godot screenshots/footage: [docs/FIRST_PERSON.md](https://github.com/varneykirk55-collab/ashigaru/blob/feat/first-person-ads/docs/FIRST_PERSON.md). The Windows archive is exported from this branch, not a native Windows-tested release. Artist polish remains for finger/thumb contact, extreme wrist/sleeve deformation and reload gestures. Cloud CPU rendering is not a gaming-GPU performance measurement.
+
+147 Godot checks passed: 33 new first-person checks, 52 combat, 28 palace and 34 rōnin checks. The display-backed tests have no skips. Complete autonomous 5v5 matches and an exported Linux smoke run passed. The Windows ZIP contents are CRC-checked and verified against the build files.

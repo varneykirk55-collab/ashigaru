@@ -2,15 +2,17 @@
 
 A standalone Godot 4 first-person team deathmatch foundation. Select Samurai or Rōnin, fight in the Palace of Ash with a single-shot musket and a katana, die, respawn, and play through a score- or timer-ended match. Five combatants per side; nine autonomous bots fight the player and one another.
 
-The rōnin faction uses the supplied full-quality skinned model and authored clips. Samurai, first-person hands and environment art still need polish. See [rōnin integration and validation](docs/RONIN.md).
+The rōnin faction uses the supplied full-quality skinned model and authored clips. First-person presentation now reuses its modeled arms and finger rig, with aligned musket iron sights and articulated reload handling. See [first-person combat and validation](docs/FIRST_PERSON.md) and [rōnin integration](docs/RONIN.md). Artist polish remains for grips, wrist/sleeve deformation, Samurai and environment art.
 
 This is a functional gameplay prototype, **not finished character or environment art**. See [limitations](docs/TESTING.md).
 
-![First-person musket view](docs/palace-exterior.png)
+![First-person musket iron sights](docs/fp-ads.png)
 
 ## Play
 
-[Windows build](dist/SamuraiWithMuskets-Windows.zip) · [Linux build](dist/SamuraiWithMuskets-Linux.zip)
+[Current branch Windows build](dist/ASHIGARU-FirstPerson-Windows.zip) · [27-second combat footage](dist/ASHIGARU-FirstPerson-Combat.mp4) · [Report](docs/FIRST_PERSON.md)
+
+Previous main builds: [Windows](dist/SamuraiWithMuskets-Windows.zip) · [Linux](dist/SamuraiWithMuskets-Linux.zip). The first-person branch is prepared for review and is not merged into main.
 
 Windows: extract the Windows ZIP and run `SamuraiWithMuskets.exe`. No Godot installation is required. The executable is unsigned. A native Windows run has not been tested in this Linux environment.
 

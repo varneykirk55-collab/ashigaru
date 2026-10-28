@@ -1,3 +1,5 @@
+> The first-person branch passes **147 Godot checks**: 33 new first-person, 52 combat, 28 palace and 34 rōnin checks. See [current report](FIRST_PERSON.md). Earlier observations below remain historical context.
+
 > Current character integration adds 34 rōnin-specific checks to the 80 gameplay/palace checks: **114 checks total, zero failures**. See [rōnin validation and limitations](RONIN.md), [rōnin raw output](ronin-output.txt) and [five-model performance](ronin-performance.txt). The palace-only observations below are retained as map-pass context.
 
 # Current validation

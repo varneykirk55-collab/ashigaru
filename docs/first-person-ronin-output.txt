@@ -1,0 +1,39 @@
+Godot Engine v4.6.3.stable.official.7d41c59c4 - https://godotengine.org
+
+PASS: actual 58-bone rōnin rig is assigned to faction
+PASS: Samurai keeps distinguishable armored placeholder
+PASS: 93,590 triangles and all 14 skinned meshes retained
+PASS: textured surfaces and masked hair survive import
+PASS: all nine authored clips retained
+PASS: imported animation keyframes preserved: Idle
+PASS: imported animation keyframes preserved: Walk
+PASS: imported animation keyframes preserved: Run
+PASS: imported animation keyframes preserved: Musket_Aim
+PASS: imported animation keyframes preserved: Musket_Fire
+PASS: imported animation keyframes preserved: Musket_Reload
+PASS: imported animation keyframes preserved: Katana_Slash
+PASS: imported animation keyframes preserved: Hit_React
+PASS: imported animation keyframes preserved: Death
+PASS: supplied idle clip plays when not aiming
+PASS: musket aim axis matches combatant forward direction
+PASS: musket hit reaction retains authored torso pose instead of forcing aim twist
+PASS: walk clip deforms the skeleton over time
+PASS: run clip drives sprint presentation
+CROUCH FOOT Y 0.1260005235672 BODY OFFSET -0.51238685846329
+PASS: compatible crouch lowers body while keeping feet grounded
+PASS: 11.13-second source reload retimed to five-second mechanic
+PASS: lower-body locomotion continues during moving reload
+PASS: background reload still finishes with katana equipped
+PASS: katana attack uses supplied clip
+PASS: repeated katana attacks restart the supplied slash clip
+PASS: damage reaction uses supplied clip
+PASS: body retained during authored death
+PASS: death clip completes with fallen body
+PASS: crouched death blends back to authored ground plane without sinking
+PASS: respawn clears stale firing/slash presentation without a phantom attack
+PASS: rōnin player has external rig and retains first-person camera
+PASS: own full body and external weapons cannot obscure first-person camera
+PASS: existing first-person weapon remains visible
+PASS: full mixed-faction 5v5 match completes with both teams scoring
+RONIN MATCH [9, 10]
+RONIN RESULT: 34 checks, 0 failures

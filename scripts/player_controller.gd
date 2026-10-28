@@ -35,7 +35,7 @@ func setup(g: Node3D, faction: int) -> void:
 	camera=Camera3D.new(); add_child(camera)
 	camera.position.y=1.65; camera.current=true; camera.fov=78
 	weapons=WeaponController.new(); camera.add_child(weapons)
-	weapons.position=Vector3(0.26,-0.27,-0.35)
+	weapons.position=Vector3.ZERO
 	weapons.setup(self)
 	if team==1:
 		if character_asset==null: character_asset=preload("res://assets/characters/Ronin.glb")
@@ -89,17 +89,17 @@ func _physics_process(delta: float) -> void:
 	elif Input.is_action_just_pressed("jump"): velocity.y=7
 	move_and_slide()
 	if global_position.y < -5: health.damage(100,self)
-	var aiming := Input.is_action_pressed("aim") and weapons.selected==0
-	camera.fov=lerpf(camera.fov,55.0 if aiming else 78.0,delta*10)
+	var aiming := weapons.viewmodel.ads
+	camera.fov=lerpf(camera.fov,lerpf(78.0,55.0,aiming),delta*10)
 	damage_kick=move_toward(damage_kick,0,delta*2)
-	camera.rotation.z=lerpf(camera.rotation.z,damage_kick*0.025,delta*12)
-	weapons.position.x=lerpf(weapons.position.x,0.03 if aiming else 0.26,delta*10)
+	camera.rotation.z=lerpf(camera.rotation.z,damage_kick*0.025+weapons.recoil*0.004,delta*12)
 	if input.length()>0 and is_on_floor():
 		footsteps-=delta
 		if footsteps<=0:
 			game.sounds.play_sound("step_"+game.arena.surface_at(global_position)); footsteps=0.32 if speed>5 else 0.47
 func _die(attacker: Node) -> void:
 	dead_time=3
+	weapons.viewmodel.ads=0; weapons.viewmodel.aim_blocked=true
 	if is_instance_valid(visual): visual.visible=false
 	weapons.visible=false
 	velocity=Vector3.ZERO; collision_layer=0; head_hitbox.collision_layer=0
@@ -117,7 +117,7 @@ func respawn() -> void:
 	crouching=false; crouch_blend=0
 	global_position=game.spawns.location(team,game.actors)
 	rotation.y=atan2(global_position.x,global_position.z)
-	camera.rotation=Vector3.ZERO
+	camera.rotation=Vector3.ZERO; camera.fov=78; damage_kick=0
 	velocity=Vector3.ZERO
 	health.reset(); health.protection=3.0
 	weapons.musket=Musket.new()
@@ -125,6 +125,7 @@ func respawn() -> void:
 	weapons.shown_weapon=weapons.selected
 	weapons.gun_model.visible=weapons.selected==0; weapons.sword_model.visible=weapons.selected==1
 	weapons.visible=true
+	if is_instance_valid(weapons.viewmodel): weapons.viewmodel.reset_pose()
 	if is_instance_valid(visual): visual.visible=true; visual.reset_pose()
 
 func react_to_hit() -> void:

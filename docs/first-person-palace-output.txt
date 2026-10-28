@@ -1,0 +1,36 @@
+Godot Engine v4.6.3.stable.official.7d41c59c4 - https://godotengine.org
+WARNING: Could not set V-Sync mode, as changing V-Sync mode is not supported by the graphics driver.
+     at: set_use_vsync (platform/linuxbsd/x11/gl_manager_x11.cpp:364)
+OpenGL API 4.5 (Core Profile) Mesa 25.0.7-2+deb13u1 - Compatibility - Using Device: Mesa - llvmpipe (LLVM 19.1.7, 256 bits)
+
+PASS: engine navmesh baked from palace collision
+PASS: 150 metre grounds have matching route grid
+PASS: ten combatants active
+PASS: spawn shield prevents incoming damage
+PASS: safe spawn slots do not overlap
+PASS: firing forfeits spawn shield
+PASS: auto-sprint toggle is functional
+PASS: auto-sprint moves player at sprint speed without Shift
+PASS: connected palace/garden route to (0.0, 0.0, 0.0)
+PASS: player physically traverses route without wall blockage to (0.0, 0.0, 0.0)
+PASS: connected palace/garden route to (16.0, 0.0, 12.0)
+PASS: player physically traverses route without wall blockage to (16.0, 0.0, 12.0)
+PASS: connected palace/garden route to (43.0, 0.0, 22.0)
+PASS: player physically traverses route without wall blockage to (43.0, 0.0, 22.0)
+PASS: connected palace/garden route to (-40.0, 0.0, -48.0)
+PASS: player physically traverses route without wall blockage to (-40.0, 0.0, -48.0)
+PASS: connected palace/garden route to (0.0, 0.0, -24.0)
+PASS: player physically traverses route without wall blockage to (0.0, 0.0, -24.0)
+PASS: connected palace/garden route to (0.0, 0.0, 24.0)
+PASS: player physically traverses route without wall blockage to (0.0, 0.0, 24.0)
+PASS: reload cover is reachable and blocks opponent sight
+PASS: flanking lanes produce distinct routes
+RANGED DIAGNOSTIC: health=100.0 loaded=false target_player=true reload=3.51666666666667
+PASS: bot aims and fires musket at an 18 metre encounter (spread may miss)
+PASS: bot switches to katana and kills at close range without firing
+PASS: bots enter palace interiors during autonomous combat
+PASS: bots select cover while reloading
+PASS: both teams score on expanded battlefield
+PASS: complete ten-combatant match reaches results
+PALACE METRICS: scores=[10, 12] interior_bots=9 cover_choices=33
+PALACE RESULT: 28 checks, 0 failures

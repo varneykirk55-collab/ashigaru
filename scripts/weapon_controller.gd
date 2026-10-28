@@ -11,8 +11,8 @@ var recoil := 0.0
 var switch_time := 0.0
 var shown_weapon := 0
 var hands: Node3D
-var hand_grips: Array[Node3D]=[]
 var hit_kind := ""
+var viewmodel: FirstPersonViewmodel
 func setup(owner_actor: CharacterBody3D) -> void:
 	actor=owner_actor
 	gun_model=Geometry.weapon(self,false)
@@ -28,6 +28,9 @@ func tick(delta: float) -> void:
 		switch_time=maxf(0,switch_time-delta)
 		if switch_time<=0.18 and shown_weapon!=selected:
 			shown_weapon=selected; gun_model.visible=selected==0; sword_model.visible=selected==1
+	if is_instance_valid(viewmodel):
+		viewmodel.update(delta)
+		return
 	var dip := sin(clampf(switch_time/0.36,0,1)*PI)*0.45
 	var loading := musket.remaining>0 and selected==0
 	var progress := 1-musket.remaining/Musket.RELOAD_TIME if loading else 0.0
@@ -44,28 +47,13 @@ func tick(delta: float) -> void:
 	gun_model.rotation=gun_model.rotation.lerp(gun_rot,weight)
 	sword_model.position=sword_model.position.lerp(Vector3(-slash*0.1,-dip,-0.25),weight)
 	sword_model.rotation=sword_model.rotation.lerp(sword_rot,weight)
-	if is_instance_valid(hands):
-		hands.position=Vector3(0,-dip-envelope*0.09,recoil*0.12)
-		hands.rotation.z=envelope*0.3+slash*0.25
-		for i in range(hand_grips.size()):
-			var target_grip := Vector3(0.035,-0.065,-0.3) if i==1 else Vector3(-0.04,-0.06,-0.65)
-			if selected==1: target_grip=Vector3(0.035,-0.045,-0.13) if i==1 else Vector3(-0.015,-0.09,-0.02)
-			hand_grips[i].position=hand_grips[i].position.lerp(target_grip,weight)
 func switch_weapon() -> void:
 	if switch_time>0 or actor.health.value<=0: return
 	selected=1-selected
 	switch_time=0.36
 func _build_hands() -> void:
-	hands=Node3D.new(); add_child(hands)
-	var sleeve := Geometry.mat(Color("292c30"))
-	var skin := Geometry.mat(Color("b18c72"))
-	for side in [-1,1]:
-		var grip := Node3D.new(); hands.add_child(grip); hand_grips.append(grip)
-		grip.position=Vector3(0.035,-0.065,-0.3) if side>0 else Vector3(-0.04,-0.06,-0.65)
-		var arm := Geometry.cylinder(grip,Vector3(0,-0.12,0.13),0.045,0.065,0.3,sleeve)
-		arm.rotation.x=-0.85
-		Geometry.sphere(grip,Vector3.ZERO,Vector3(0.085,0.105,0.12),skin)
-		Geometry.sphere(grip,Vector3(side*-0.035,0.02,-0.025),Vector3(0.035,0.055,0.07),skin)
+	viewmodel=FirstPersonViewmodel.new(); add_child(viewmodel); viewmodel.setup(self)
+	hands=viewmodel.rig
 func reload() -> void:
 	if musket.reload(): actor.game.sounds.play_sound("reload",actor.global_position)
 func attack(origin: Vector3, direction: Vector3) -> bool:
@@ -76,8 +64,11 @@ func attack(origin: Vector3, direction: Vector3) -> bool:
 			return false
 		actor.health.protection=0
 		recoil=1
+		if is_instance_valid(viewmodel): viewmodel.update(0.0)
 		actor.game.sounds.play_sound("shot",origin)
-		actor.game.muzzle(origin+direction*1.0)
+		var flash_origin := origin+direction*1.0
+		if is_instance_valid(viewmodel): flash_origin=actor.camera.global_transform*(gun_model.transform*Vector3(0,0.065,-1.49))
+		actor.game.muzzle(flash_origin)
 		var result := DamageSystem.trace(actor,origin,direction,90)
 		if result and DamageSystem.hit(result.collider,100,actor):
 			var headshot: bool = result.get("headshot",false)

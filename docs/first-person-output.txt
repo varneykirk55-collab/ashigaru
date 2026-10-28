@@ -1,0 +1,40 @@
+Godot Engine v4.6.3.stable.official.7d41c59c4 - https://godotengine.org
+WARNING: Could not set V-Sync mode, as changing V-Sync mode is not supported by the graphics driver.
+     at: set_use_vsync (platform/linuxbsd/x11/gl_manager_x11.cpp:364)
+OpenGL API 4.5 (Core Profile) Mesa 25.0.7-2+deb13u1 - Compatibility - Using Device: Mesa - llvmpipe (LLVM 19.1.7, 256 bits)
+
+PASS: first-person arms use original 58-bone skin and two source body/sleeve meshes
+PASS: arm mesh retains original skin binds and material surfaces
+PASS: arm mesh retains original skin binds and material surfaces
+PASS: modeled arm/hand geometry replaces primitive spheres and cylinders
+ARM TRIANGLES: 11416
+PASS: both musket palms converge onto weapon grips
+PASS: isolated transparent viewmodel avoids wall clipping and does not intercept input
+PASS: real right mouse input raises musket into ADS
+PASS: front blade top and rear notch sight line project to screen center
+PASS: hip reticle fades away during settled ADS
+PASS: movement works during ADS with less than 1.5 pixels of sight drift
+PASS: ADS camera ray hits the enemy behind the aligned sights and scores the kill
+PASS: firing produces weapon recoil and a brief muzzle flash
+PASS: successful firing starts the original five-second automatic reload
+PASS: reload support hand leaves the gun and reaches toward the pouch
+PASS: switch finishes on katana with musket animation hidden
+PASS: switching continues the same ammunition clock
+PASS: katana remains usable for unchanged 55 damage during background reload
+PASS: katana swing visibly moves the weapon and articulated wrists
+PASS: both katana palms follow the moving hilt
+PASS: returning to musket restores remaining reload state without restarting it
+PASS: resumed reload samples its current loading/handling stage
+PASS: five-second timer completes with exactly one reserve consumed
+PASS: reload finishes with both hands back on the weapon
+PASS: reload and katana gameplay constants remain unchanged
+PASS: hip-fire works and eye-line wall occlusion prevents shooting through nearby cover
+PASS: production physics reload duration measures five seconds
+PASS: crouching retains the camera-relative ADS grip
+PASS: sprint movement remains functional
+PASS: death exits ADS, hides the viewmodel and blocks attacks
+PASS: respawn restores a clean, ready viewmodel after the existing death delay
+PASS: holding right mouse through death does not restore stale ADS
+PASS: fresh right-click after respawn enters ADS normally
+PASS: returning to menu hides the viewmodel overlay
+RESULT: 33 checks, 0 failures
