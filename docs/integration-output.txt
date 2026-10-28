@@ -13,12 +13,18 @@ PASS: mouse look yaw and pitch
 PASS: jump uses upward velocity
 PASS: gravity returns player to ground
 PASS: mouse click passes through HUD and fires musket
+PASS: musket recoil animates rearward after firing
 PASS: hitscan kills opposing bot and awards team score
 PASS: second shot blocked and reload starts
-PASS: ten-second reload begins
-PASS: not loaded after five seconds
-PASS: reload completes and consumes one reserve
+PASS: five-second automatic background reload begins
+PASS: not loaded halfway through five-second reload
+PASS: musket visibly tilts during reload
+PASS: weapon switch begins without instantly hiding the old weapon
+PASS: weapon switch lowers weapon smoothly
+PASS: weapon switch finishes on the katana
+PASS: background reload completes while katana equipped and consumes one reserve
 PASS: katana damages enemy at close range
+PASS: katana swing animates through an arc
 PASS: katana cooldown blocks repeated same-frame attack
 PASS: second katana cut kills
 PASS: allies protected from friendly damage
@@ -30,7 +36,24 @@ PASS: score limit shows match results
 PASS: restart resets scores and supports opposite faction
 PASS: timer can end match
 PASS: return to main menu restores overview camera
+PASS: crouch smoothly lowers camera and collider
+PASS: standing blends back from crouch
+PASS: physical head hitbox identifies a headshot
+PASS: body hit is not falsely labeled headshot
+PASS: walk articulates legs through a full gait cycle
+PASS: sprint animation state follows movement speed
+PASS: crouch movement animates lowered rig
+PASS: taking damage produces visible torso reaction
+PASS: headshot kill has distinct confirmation
+PASS: dead bot remains visible at start of death
+PASS: dead bot cannot attack
+PASS: death finishes with visible fallen body before cleanup
+PASS: dead actor stops locomotion
+PASS: body is recycled only after death delay and combatant respawns
+PASS: crouched death starts without a vertical pose pop
+PASS: reload contract remains five seconds
 PASS: bots autonomously traverse arena
 PASS: both bot teams independently score kills over 90 seconds
-BOT SCORES: [33, 36]
-RESULT: 29 checks, 0 failures, 0 skipped
+BOT SCORES: [31, 33]
+PASS: autonomous combat reaches score-limit results without forced kills
+RESULT: 52 checks, 0 failures, 0 skipped

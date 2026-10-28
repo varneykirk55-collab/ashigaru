@@ -9,6 +9,8 @@ var feed: Label
 var hit: Label
 var reload_bar: ProgressBar
 var damage_overlay: ColorRect
+var confirmation: Label
+var confirm_text := ""
 var hurt := 0.0
 var hit_time := 0.0
 var feed_time := 0.0
@@ -22,9 +24,10 @@ func setup(g: Node3D) -> void:
 	label("COURTYARD OF ASH  /  TEAM DEATHMATCH",13,Vector2(40,30),Vector2(340,30))
 	status=label("",23,Vector2(40,620),Vector2(600,80))
 	prompt=label("",20,Vector2(390,510),Vector2(500,70)); prompt.horizontal_alignment=HORIZONTAL_ALIGNMENT_CENTER
+	confirmation=label("",18,Vector2(440,398),Vector2(400,38)); confirmation.horizontal_alignment=HORIZONTAL_ALIGNMENT_CENTER
 	feed=label("",17,Vector2(870,105),Vector2(370,90)); feed.horizontal_alignment=HORIZONTAL_ALIGNMENT_RIGHT
 	hit=label("+",28,Vector2(620,337),Vector2(40,40)); hit.horizontal_alignment=HORIZONTAL_ALIGNMENT_CENTER
-	label("WASD  MOVE   SHIFT  SPRINT   SPACE  JUMP\nLMB  ATTACK   RMB  AIM   R  RELOAD   Q / WHEEL  SWITCH   ESC  PAUSE",13,Vector2(675,634),Vector2(580,65))
+	label("WASD  MOVE   SHIFT  SPRINT   SPACE  JUMP   CTRL  CROUCH\nLMB  ATTACK   RMB  AIM   R  RELOAD   Q / WHEEL  SWITCH   ESC  PAUSE",13,Vector2(675,634),Vector2(580,65))
 	reload_bar=ProgressBar.new(); root.add_child(reload_bar)
 	reload_bar.position=Vector2(40,606); reload_bar.size=Vector2(300,5); reload_bar.show_percentage=false; reload_bar.mouse_filter=Control.MOUSE_FILTER_IGNORE
 func label(text: String, size: int, pos: Vector2, extent: Vector2) -> Label:
@@ -48,10 +51,16 @@ func _process(delta: float) -> void:
 	reload_bar.visible=m.remaining>0
 	reload_bar.value=(1-m.remaining/Musket.RELOAD_TIME)*100
 	prompt.text="RESPAWNING IN %d" % ceili(p.dead_time) if p.health.value<=0 else ("RELOADING  %.1fs" % m.remaining if m.remaining>0 else ("R  ·  RELOAD" if not m.loaded and m.reserve>0 else ("OUT OF POWDER  ·  Q FOR KATANA" if m.reserve==0 and not m.loaded else "")))
-	hurt=maxf(0,hurt-delta); hit_time=maxf(0,hit_time-delta); feed_time=maxf(0,feed_time-delta)
+	hurt=maxf(0,hurt-delta); hit_time=maxf(0,hit_time-delta);
+	confirmation.text=confirm_text if hit_time>0 else ""
+	feed_time=maxf(0,feed_time-delta)
 	damage_overlay.color=Color(0.55,0.05,0.02,hurt*0.6)
-	hit.text="×" if hit_time>0 else "+"
+	hit.text="◇" if "HEADSHOT" in confirm_text and hit_time>0 else ("×" if hit_time>0 else "+")
 	hit.modulate=Color("e4a45d") if hit_time>0 else Color(1,1,1,0.65)
 	feed.visible=feed_time>0
 func message(text: String) -> void:
 	feed.text=text; feed_time=4
+
+func confirm(kind: String) -> void:
+	confirm_text=kind
+	hit_time=0.7 if "KILL" in kind else 0.35

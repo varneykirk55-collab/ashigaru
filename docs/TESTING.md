@@ -1,32 +1,19 @@
-# Validation and limitations
+# Current validation
 
-Validated with Godot 4.6.3 Standard on Linux. Rendering used Xorg's dummy display and Mesa llvmpipe OpenGL 4.5. Tests are automated gameplay tests; no human keyboard-and-mouse playtest or native Windows test was performed.
+Godot 4.6.3 Standard on Linux, Xorg dummy display, Mesa llvmpipe OpenGL renderer. `DISPLAY=:9 ./tools/test.sh` runs the production scene, physics, input routing and combat systems: **52 checks passed, 0 failed, 0 skipped**.
 
-## Evidence
+The suite verifies menus, both factions, first-person movement/mouse look, jump/gravity, musket damage and ammunition, five-second automatic reload while the katana is selected, recoil/reload/switch/swing motion, melee damage/cooldown, friendly-fire rules, crouch camera/collision transitions, physical headshot/body classification, hit reaction, visible death motion and completion, no combat or movement while dead, delayed body recycling, respawn, pause, navigation, timer/score results, restart and return to menu.
 
-`DISPLAY=:9 ./tools/test.sh`: **29 checks passed, 0 failed, 0 skipped**. The suite loads the actual game scene, dispatches a real mouse input event through the viewport, steps collision physics, and exercises production weapon and match systems.
+A fresh 90-second autonomous simulation uses normal bots, normal spawns and unmodified damage. Both sides score independently (31–33 in this run). The same match then continues to a score limit through normal combat and reaches its results screen without forced kills. Earlier controlled assertions reposition/freeze actors to isolate individual systems; they are not used as evidence of autonomous bot behavior.
 
-Covered: launch menu, faction UI selection, four-versus-four match, first-person camera, WASD movement, mouse yaw/pitch, jump/gravity, GUI input routing, musket ray damage and team score, single-shot lockout, ten-second reload timing and ammunition consumption, katana range/damage/cooldown, friendly-fire protection, player death/respawn, paused clock, grid routing, score-limit results, faction-switching restart, timer results, and return to menu.
+[Raw integration output](integration-output.txt). Headless runs explicitly skip two mouse-capture checks and are not equivalent to the display-backed run.
 
-The last portion is a 90-second autonomous simulation using normal spawns, normal damage, and no forced kills or target teleporting. At least five bots moved more than two metres; both sides independently scored. The latest validated run ended with Samurai 33, Rōnin 36. Controlled tests earlier in the suite freeze/reposition bots to isolate weapon damage and respawn assertions; the autonomous phase starts a fresh match.
+The Windows x86-64 release is built using the retained, officially SHA-512-verified Godot templates. It has not been run natively on Windows (no Windows runner/Wine). The Linux x86-64 export is additionally smoke-tested with `--headless --fixed-fps 60 -- --smoke-match`; see [export output](export-smoke-output.txt). Both build ZIPs are CRC-checked and checksummed in `dist/SHA256SUMS.txt`.
 
-Headless runs explicitly skip the two captured-mouse checks because the headless display cannot capture a mouse. They do not substitute for the full display run.
+Footage and screenshots are rendered by the actual game, not mockups. The capture is scripted and labels its staged and autonomous segments. No human mouse-and-keyboard playtest was performed. See the [animation report](ANIMATION.md) for the status of all requested states and the missing Claude asset.
 
-Windows x86-64 and Linux x86-64 release exports were built using the official 4.6.3 templates, verified with the release's SHA-512 list. The Windows artifact was confirmed to be a PE32+ x86-64 executable. Native Windows execution is **unverified** (no Windows runner/Wine available).
+## Remaining limitations
 
-The exported Linux binary launched headlessly and ran its own 60-second match smoke check: `--headless --fixed-fps 60 -- --smoke-match`. Both teams scored (23–20). Export smoke checks run production gameplay, not the source integration script.
+Character art, hands, scenery and synthesized audio remain provisional. Procedural poses and fall reactions are not authored skeletal animation or physics ragdolls. No foot/finger IK, detailed flintlock loading choreography, scene-aware corpse collisions, squad tactics, controller support or networking were introduced. Bot routing/targeting, arena geometry, weapon models and audio assets are retained.
 
-Screenshots `menu.png`, `gameplay.png`, `reload.png`, and `katana.png` were captured from the running OpenGL game, not mockups. Weapon screenshots use a reproducible central-lane starting position. No gameplay video was recorded.
-
-## Known limitations
-
-- **The brief's realistic visual target is not met.** Character meshes are original provisional assembled silhouettes, with armor/helmet or dark cloth identifying factions. There are no rigged humanoid walk/death animations or first-person hands. They remain replaceable in `Geometry.warrior`.
-- Arena architecture and materials are original procedural prototype art. The courtyard has tiled halls, colonnades, cover, gates, lanterns, trees, side passages, and open lanes, but needs a dedicated environment-art pass.
-- Weapon motion is procedural recoil/tilt/swing, not a detailed flintlock loading animation. Reload progress and the complete ten-second timing are functional. The supplied Flintlock model is used as the musket.
-- Melee uses a centre ray with physical range, not blade-volume sweep detection. Bots use grid A*, direct sight rays, simple targeting and movement, and body collisions; no squad tactics or crowd avoidance beyond collision are implemented. Pathological crowding may need tuning.
-- Sound is original synthesized placeholder audio, not production foley. Settings support volume, mouse sensitivity, and fullscreen; there is no key-rebinding UI or controller support.
-- UI targets 1280×720 with canvas scaling. Very unusual aspect ratios and high-DPI Windows behavior have not been tested.
-- No networking, dedicated server, save-game progression, installers, code signing, or realistic asset production was added.
-- The virtual display reports unsupported VSync changes; short forced `--quit-after` runs can report audio playback resources still alive at shutdown. Normal integration cleanup explicitly stops audio. These do not establish a gameplay failure, but long-session resource profiling remains unperformed.
-
-This deliverable establishes a tested combat loop. It should not be presented as a finished realistic commercial game.
+Melee remains a physical centre ray rather than a blade-volume sweep. The UI targets 1280×720; unusual aspect ratios, long-session resource profiling and native Windows behavior remain untested. The virtual display reports unsupported VSync changes. Short forced shutdowns can report still-active audio resources; normal test teardown stops audio explicitly.

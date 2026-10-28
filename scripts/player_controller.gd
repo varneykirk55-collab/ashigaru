@@ -1,5 +1,6 @@
 class_name PlayerController
 extends CharacterBody3D
+@export var character_asset: PackedScene
 var game: Node3D
 var team := 0
 var health: HealthComponent
@@ -8,17 +9,25 @@ var camera: Camera3D
 var dead_time := 0.0
 var sensitivity := 0.002
 var footsteps := 0.0
+var crouching := false
+var crouch_blend := 0.0
+var body_shape: CollisionShape3D
+var head_hitbox: Area3D
+var death_body: CharacterAnimator
+var damage_kick := 0.0
 func setup(g: Node3D, faction: int) -> void:
 	game=g; team=faction
 	name="PlayerController"
 	var shape := CollisionShape3D.new()
 	var capsule := CapsuleShape3D.new()
-	capsule.radius=0.32; capsule.height=1.8
-	shape.shape=capsule; shape.position.y=0.9
-	add_child(shape)
+	capsule.radius=0.32; capsule.height=1.45
+	shape.shape=capsule; shape.position.y=0.725
+	add_child(shape); body_shape=shape
+	head_hitbox=DamageSystem.add_head_hitbox(self)
 	health=HealthComponent.new(); add_child(health)
 	health.died.connect(_die)
-	health.changed.connect(func(_v): game.hud.hurt=0.35)
+	health.changed.connect(func(v):
+		if v<100: game.hud.hurt=0.25)
 	camera=Camera3D.new(); add_child(camera)
 	camera.position.y=1.65; camera.current=true; camera.fov=78
 	weapons=WeaponController.new(); camera.add_child(weapons)
@@ -34,15 +43,30 @@ func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed("reload"): weapons.reload()
 	if event.is_action_pressed("switch"): weapons.switch_weapon()
 func _physics_process(delta: float) -> void:
-	if not game.match_state.active or game.paused: return
-	weapons.tick(delta)
+	if game.paused: return
 	if health.value<=0:
+		if is_instance_valid(death_body): death_body.tick(delta,0,false,weapons)
+		camera.rotation.z=lerpf(camera.rotation.z,0.16,1-exp(-5*delta))
 		dead_time-=delta
-		if dead_time<=0: respawn()
+		if game.match_state.active and dead_time<=0 and (not is_instance_valid(death_body) or death_body.death_finished): respawn()
 		return
+	if not game.match_state.active: return
+	weapons.tick(delta)
 	var input := Input.get_vector("left","right","forward","back") if Input.mouse_mode==Input.MOUSE_MODE_CAPTURED else Vector2.ZERO
 	var direction := transform.basis * Vector3(input.x,0,input.y)
-	var speed := 7.0 if Input.is_action_pressed("sprint") else 4.5
+	crouching=Input.is_action_pressed("crouch")
+	# A standing capsule overlap prevents standing into overhead geometry.
+	if not crouching and crouch_blend>0.1:
+		var probe := PhysicsShapeQueryParameters3D.new()
+		var stand := CapsuleShape3D.new(); stand.radius=0.32; stand.height=1.45
+		probe.shape=stand; probe.transform=Transform3D(Basis.IDENTITY,global_position+Vector3(0,0.725,0)); probe.exclude=[get_rid()]; probe.collision_mask=1
+		crouching=not get_world_3d().direct_space_state.intersect_shape(probe,1).is_empty()
+	crouch_blend=lerpf(crouch_blend,1.0 if crouching else 0.0,1-exp(-12*delta))
+	body_shape.shape.height=1.45-crouch_blend*0.43
+	body_shape.position.y=body_shape.shape.height/2
+	head_hitbox.position.y=head_height()
+	camera.position.y=1.65-crouch_blend*0.43
+	var speed := 2.2 if crouching else (7.0 if Input.is_action_pressed("sprint") else 4.5)
 	velocity.x=direction.x*speed; velocity.z=direction.z*speed
 	if not is_on_floor(): velocity.y-=20*delta
 	elif Input.is_action_just_pressed("jump"): velocity.y=7
@@ -50,6 +74,8 @@ func _physics_process(delta: float) -> void:
 	if global_position.y < -5: health.damage(100,self)
 	var aiming := Input.is_action_pressed("aim") and weapons.selected==0
 	camera.fov=lerpf(camera.fov,55.0 if aiming else 78.0,delta*10)
+	damage_kick=move_toward(damage_kick,0,delta*2)
+	camera.rotation.z=lerpf(camera.rotation.z,damage_kick*0.025,delta*12)
 	weapons.position.x=lerpf(weapons.position.x,0.03 if aiming else 0.26,delta*10)
 	if input.length()>0 and is_on_floor():
 		footsteps-=delta
@@ -58,9 +84,19 @@ func _physics_process(delta: float) -> void:
 func _die(attacker: Node) -> void:
 	dead_time=3
 	weapons.visible=false
+	velocity=Vector3.ZERO; collision_layer=0; head_hitbox.collision_layer=0
+	death_body=Geometry.warrior(game,team,character_asset)
+	death_body.global_position=global_position; death_body.rotation.y=rotation.y
+	# Body has world-space placement; death animation owns its local fall transform.
+	var anchor := Node3D.new(); game.add_child(anchor); anchor.global_position=global_position; anchor.rotation.y=rotation.y
+	death_body.reparent(anchor); death_body.transform=Transform3D.IDENTITY
+	death_body.die()
 	game.record_kill(attacker,self)
 	game.sounds.play_sound("death")
 func respawn() -> void:
+	if is_instance_valid(death_body): death_body.get_parent().queue_free()
+	collision_layer=1; head_hitbox.collision_layer=2
+	crouching=false; crouch_blend=0
 	global_position=game.spawns.location(team)
 	rotation.y=0 if team==0 else PI
 	camera.rotation=Vector3.ZERO
@@ -68,3 +104,10 @@ func respawn() -> void:
 	health.reset()
 	weapons.musket=Musket.new()
 	weapons.visible=true
+
+func react_to_hit() -> void:
+	damage_kick=1
+func head_height() -> float:
+	return 1.64-crouch_blend*0.43
+func _exit_tree() -> void:
+	if is_instance_valid(death_body): death_body.get_parent().queue_free()

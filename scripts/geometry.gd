@@ -61,36 +61,8 @@ static func weapon(parent: Node3D, katana: bool) -> Node3D:
 		model.rotation.z=-0.18
 		for child in model.find_children("*SCABBARD*", "Node3D", true, false): child.free()
 	return pivot
-static func warrior(parent: Node3D, team: int) -> Node3D:
-	var root := Node3D.new()
+static func warrior(parent: Node3D, team: int, asset: PackedScene = null) -> CharacterAnimator:
+	var root := CharacterAnimator.new()
 	parent.add_child(root)
-	var cloth := mat(Color("20252a") if team == 1 else Color("353b42"))
-	var armor := mat(Color("702f28"),0.55,0.45)
-	var trim := mat(Color("b69a60"),0.65,0.4)
-	var skin := mat(Color("b18c72"))
-	for side in [-1,1]:
-		cylinder(root,Vector3(side*0.16,0.47,0),0.13,0.19,0.68,cloth)
-		box(root,Vector3(side*0.16,0.1,-0.08),Vector3(0.24,0.17,0.4),cloth)
-		var arm := cylinder(root,Vector3(side*0.36,1.18,-0.08),0.11,0.09,0.53,cloth)
-		arm.rotation.z=side*0.17
-		sphere(root,Vector3(side*0.34,0.98,-0.16),Vector3(0.15,0.2,0.16),skin)
-	cylinder(root,Vector3(0,1.12,0),0.28,0.29,0.6,cloth)
-	sphere(root,Vector3(0,1.66,0),Vector3(0.32,0.4,0.31),skin)
-	cylinder(root,Vector3(0,0.92,0),0.3,0.31,0.1,trim)
-	if team == 0:
-		for i in range(5):
-			box(root,Vector3(0,1.06+i*0.072,-0.24),Vector3(0.49,0.06,0.09),armor)
-		for side in [-1,1]:
-			for i in range(4):
-				box(root,Vector3(side*0.35,1.44-i*0.055,0),Vector3(0.24,0.048,0.36),armor)
-			box(root,Vector3(side*0.13,0.77,-0.22),Vector3(0.23,0.25,0.08),armor)
-			var horn := cylinder(root,Vector3(side*0.2,1.97,-0.02),0,0.035,0.3,trim)
-			horn.rotation.z=-side*0.65
-		sphere(root,Vector3(0,1.82,0.025),Vector3(0.4,0.32,0.4),armor)
-		cylinder(root,Vector3(0,1.74,0.03),0.22,0.24,0.05,armor)
-	else:
-		sphere(root,Vector3(0,1.8,0.025),Vector3(0.34,0.2,0.32),cloth)
-		var lapel := box(root,Vector3(0,1.31,-0.255),Vector3(0.055,0.34,0.035),mat(Color("777064")))
-		lapel.rotation.z=0.5
-		cylinder(root,Vector3(0,0.72,0),0.27,0.38,0.42,cloth)
+	root.setup(team,asset)
 	return root

@@ -26,13 +26,14 @@ Source: install **Godot 4.6.3 Standard** (not .NET), import `project.godot`, the
 | WASD | Move |
 | Mouse | Look |
 | Shift / Space | Sprint / Jump |
+| Left Ctrl | Crouch / crouch movement |
 | Left mouse | Fire / katana cut |
 | Right mouse | Aim musket |
 | Q or mouse wheel | Switch weapon |
 | R | Reload musket |
 | Escape | Pause / resume |
 
-Musket: 100 damage, one loaded shot, 18 reserve cartridges, a full ten-second reload. Clicking with an empty musket starts reloading. Katana: 55 damage, 2.7 m reach, 0.8-second cooldown. Reload continues while the katana is selected. Each combatant has 100 health and respawns after three seconds. Respawning restores equipment. Settings persist in Godot's `user://settings.cfg`.
+Musket: 100 damage, one loaded shot, 18 reserve cartridges, a full five-second reload. Reload begins automatically after firing and continues in the background. Katana: 55 damage, 2.7 m reach, 0.8-second cooldown. Reload continues while the katana is selected. Each combatant has 100 health and respawns after three seconds. Respawning restores equipment. Settings persist in Godot's `user://settings.cfg`.
 
 ## Cloud development
 
@@ -77,4 +78,4 @@ Both presets embed the PCK for single-file desktop distribution and exclude sour
 
 No networking is implemented. Attack/damage and match state are separated from UI and input to make a later authoritative networking layer possible; the current code is not network-ready.
 
-See [test evidence and limitations](docs/TESTING.md) and the original [project brief](docs/BRIEF.md).
+See [animation status and footage](docs/ANIMATION.md), [test evidence and limitations](docs/TESTING.md) and the original [project brief](docs/BRIEF.md).

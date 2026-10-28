@@ -30,7 +30,7 @@ func _ready() -> void:
 	if "--capture" in OS.get_cmdline_user_args(): _capture()
 	if "--smoke-match" in OS.get_cmdline_user_args(): _smoke_match()
 func _inputs() -> void:
-	var bindings := {"forward":KEY_W,"back":KEY_S,"left":KEY_A,"right":KEY_D,"jump":KEY_SPACE,"sprint":KEY_SHIFT,"reload":KEY_R,"switch":KEY_Q,"pause":KEY_ESCAPE}
+	var bindings := {"forward":KEY_W,"back":KEY_S,"left":KEY_A,"right":KEY_D,"jump":KEY_SPACE,"sprint":KEY_SHIFT,"reload":KEY_R,"switch":KEY_Q,"pause":KEY_ESCAPE,"crouch":KEY_CTRL}
 	for action in bindings:
 		InputMap.add_action(action)
 		var e := InputEventKey.new(); e.physical_keycode=bindings[action]; InputMap.action_add_event(action,e)
@@ -89,7 +89,9 @@ func record_kill(attacker: Node, victim: Node) -> void:
 		match_state.kill(attacker.team)
 		hud.message(("SAMURAI" if attacker.team==0 else "RŌNIN")+"  eliminated  "+("SAMURAI" if victim.team==0 else "RŌNIN"))
 func feedback(actor: Node, _message: String, _hit: bool) -> void:
-	if actor==player: hud.hit_time=0.2; sounds.play_sound("hit")
+	if actor==player:
+		hud.confirm(_message)
+		sounds.play_sound("hit")
 func muzzle(pos: Vector3) -> void:
 	var light := OmniLight3D.new(); add_child(light); light.global_position=pos
 	light.light_color=Color("ffb45c"); light.light_energy=4; light.omni_range=5

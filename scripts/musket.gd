@@ -1,6 +1,6 @@
 class_name Musket
 extends RefCounted
-const RELOAD_TIME := 10.0
+const RELOAD_TIME := 5.0
 var loaded := true
 var reserve := 18
 var remaining := 0.0
