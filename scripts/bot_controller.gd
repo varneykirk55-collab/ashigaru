@@ -23,8 +23,10 @@ var route_variant := 0
 var interior_visits := 0
 var cover_selections := 0
 var reposition_time := 0.0
+var steps: FootstepEmitter
 func setup(g: Node3D, faction: int) -> void:
 	game=g; team=faction
+	steps=FootstepEmitter.new(self,g)
 	route_variant=get_instance_id()%3
 	var col := CollisionShape3D.new()
 	var capsule := CapsuleShape3D.new()
@@ -48,6 +50,7 @@ func _physics_process(delta: float) -> void:
 		return
 	if not game.match_state.active: return
 	weapons.tick(delta)
+	steps.tick(delta,false)
 	visual.tick(delta,Vector2(velocity.x,velocity.z).length(),crouching,weapons,is_instance_valid(target) and target.health.value>0)
 	head_hitbox.position=visual.head_position()
 	body_shape.shape.height=1.45+visual.position.y
@@ -121,9 +124,10 @@ func _die(attacker: Node) -> void:
 	head_hitbox.collision_layer=0
 	collision_layer=0
 	collision_mask=1
-	game.sounds.play_sound("death",global_position)
+	game.sounds.death_cue(self)
 func respawn() -> void:
 	global_position=game.spawns.location(team,game.actors)
+	steps.reset()
 	velocity=Vector3.ZERO
 	health.reset(); health.protection=3.0; weapons.musket=Musket.new()
 	weapons.recoil=0; weapons.animation=0; weapons.switch_time=0
@@ -135,6 +139,7 @@ func respawn() -> void:
 
 func react_to_hit() -> void:
 	visual.react()
+	game.sounds.damage_cue(self)
 func head_height() -> float:
 	return visual.head_position().y
 

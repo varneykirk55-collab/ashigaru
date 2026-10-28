@@ -12,9 +12,7 @@ var paused := false
 var sensitivity := 0.002
 var player_kills := 0
 var player_deaths := 0
-var ambient: AudioStreamPlayer
-var garden_ambient: AudioStreamPlayer
-var interior_ambient: AudioStreamPlayer
+var ambience: Ambience
 func _ready() -> void:
 	seed(7419)
 	_inputs()
@@ -23,14 +21,13 @@ func _ready() -> void:
 	sounds=SoundBank.new(); add_child(sounds)
 	load_settings()
 	match_state=MatchManager.new(); add_child(match_state)
-	match_state.ended.connect(func(): Input.mouse_mode=Input.MOUSE_MODE_VISIBLE; menu.show_results())
+	match_state.ended.connect(func():
+		Input.mouse_mode=Input.MOUSE_MODE_VISIBLE
+		if is_instance_valid(player): sounds.match_result(player.team,match_state.scores)
+		menu.show_results())
 	hud=HUD.new(); add_child(hud); hud.setup(self)
 	menu=MainMenu.new(); add_child(menu); menu.setup(self)
-	ambient=AudioStreamPlayer.new(); add_child(ambient)
-	ambient.stream=load("res://assets/audio/ambient.wav"); ambient.volume_db=linear_to_db(maxf(0.001,sounds.volume))-20
-	ambient.stream.loop_mode=AudioStreamWAV.LOOP_FORWARD; ambient.play()
-	garden_ambient=_ambience("palace_wind")
-	interior_ambient=_ambience("palace_interior")
+	ambience=Ambience.new(); add_child(ambience); ambience.setup(self)
 	if "--capture" in OS.get_cmdline_user_args(): _capture()
 	if "--smoke-match" in OS.get_cmdline_user_args(): _smoke_match()
 func _inputs() -> void:
@@ -63,6 +60,7 @@ func start_match(team: int, quick := false) -> void:
 	for actor in actors:
 		remove_child(actor); actor.queue_free()
 	actors.clear(); spawns=SpawnManager.new()
+	sounds.reset_world()
 	paused=false; player_kills=0; player_deaths=0
 	match_state.scores=[0,0]; match_state.time_left=180 if quick else 480
 	match_state.score_limit=10 if quick else 40; match_state.active=true
@@ -73,15 +71,13 @@ func start_match(team: int, quick := false) -> void:
 			var bot: BotController=preload("res://scenes/bot.tscn").instantiate(); add_child(bot); bot.setup(self,faction); actors.append(bot); bot.respawn()
 	menu.root.hide()
 	Input.mouse_mode=Input.MOUSE_MODE_CAPTURED
+	sounds.ui("match_start",-2.0)
 func _process(delta: float) -> void:
 	if not paused: match_state.tick(delta)
-	if is_instance_valid(player) and is_instance_valid(interior_ambient):
-		var indoors: bool=arena.surface_at(player.global_position)=="wood"
-		interior_ambient.volume_db=lerpf(interior_ambient.volume_db,linear_to_db(maxf(0.001,sounds.volume))-18 if indoors else -65.0,delta*3)
-		garden_ambient.volume_db=lerpf(garden_ambient.volume_db,-60.0 if indoors else linear_to_db(maxf(0.001,sounds.volume))-15,delta*3)
 func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed("pause") and match_state.active:
 		set_paused(not paused)
+		sounds.ui("ui_pause" if paused else "ui_back")
 		if paused: menu.show_pause()
 		else: menu.root.hide()
 func set_paused(value: bool) -> void:
@@ -89,6 +85,7 @@ func set_paused(value: bool) -> void:
 	Input.mouse_mode=Input.MOUSE_MODE_VISIBLE if value else Input.MOUSE_MODE_CAPTURED
 func return_menu() -> void:
 	match_state.active=false; paused=false
+	sounds.reset_world()
 	menu_camera.current=true
 	menu.show_main()
 func record_kill(attacker: Node, victim: Node) -> void:
@@ -100,7 +97,7 @@ func record_kill(attacker: Node, victim: Node) -> void:
 func feedback(actor: Node, _message: String, _hit: bool) -> void:
 	if actor==player:
 		hud.confirm(_message)
-		sounds.play_sound("hit")
+		sounds.hit_confirm(_message,0.2 if _message.begins_with("MELEE") else 0.0)
 func muzzle(pos: Vector3) -> void:
 	var light := OmniLight3D.new(); add_child(light); light.global_position=pos
 	light.light_color=Color("ffb45c"); light.light_energy=4; light.omni_range=5
@@ -130,13 +127,17 @@ func impact(pos: Vector3) -> void:
 	var spark := Geometry.sphere(self,pos,Vector3.ONE*0.07,Geometry.mat(Color("f6bc70")))
 	var t := create_tween(); t.tween_interval(0.12); t.tween_callback(spark.queue_free)
 func save_settings() -> void:
-	var c := ConfigFile.new(); c.set_value("controls","sensitivity",sensitivity); c.set_value("audio","volume",sounds.volume); c.save("user://settings.cfg")
+	var c := ConfigFile.new(); c.set_value("controls","sensitivity",sensitivity); for key in sounds.volumes: c.set_value("audio",key,sounds.volumes[key])
+	c.save("user://settings.cfg")
 	if is_instance_valid(player): player.sensitivity=sensitivity
-	if is_instance_valid(ambient): ambient.volume_db=linear_to_db(maxf(0.001,sounds.volume))-20
 func load_settings() -> void:
 	var c := ConfigFile.new()
 	if c.load("user://settings.cfg")==OK:
-		sensitivity=c.get_value("controls","sensitivity",0.002); sounds.volume=c.get_value("audio","volume",0.7)
+		sensitivity=c.get_value("controls","sensitivity",0.002)
+		# Older settings files stored one "volume" value; it becomes the master level.
+		sounds.set_volume("master",c.get_value("audio","master",c.get_value("audio","volume",sounds.volumes["master"])))
+		sounds.set_volume("sfx",c.get_value("audio","sfx",sounds.volumes["sfx"]))
+		sounds.set_volume("ambient",c.get_value("audio","ambient",sounds.volumes["ambient"]))
 func _capture() -> void:
 	await get_tree().create_timer(1).timeout
 	await RenderingServer.frame_post_draw
@@ -157,11 +158,6 @@ func _capture() -> void:
 	get_viewport().get_texture().get_image().save_png("/workspace/ashigaru/docs/katana.png")
 	get_tree().quit()
 
-func _exit_tree() -> void:
-	if is_instance_valid(ambient): ambient.stop()
-	if is_instance_valid(garden_ambient): garden_ambient.stop()
-	if is_instance_valid(interior_ambient): interior_ambient.stop()
-
 func _smoke_match() -> void:
 	start_match(0)
 	match_state.score_limit=1000
@@ -169,8 +165,3 @@ func _smoke_match() -> void:
 	var ok: bool = match_state.scores[0]>0 and match_state.scores[1]>0
 	print("EXPORTED MATCH SMOKE: ","PASS" if ok else "FAIL", " scores=",match_state.scores)
 	get_tree().quit(0 if ok else 1)
-
-func _ambience(kind: String) -> AudioStreamPlayer:
-	var p := AudioStreamPlayer.new(); add_child(p)
-	p.stream=load("res://assets/audio/"+kind+".wav"); p.stream.loop_mode=AudioStreamWAV.LOOP_FORWARD
-	p.volume_db=-60; p.play(); return p

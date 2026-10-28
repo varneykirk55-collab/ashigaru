@@ -26,6 +26,9 @@ func text(s: String, size := 20) -> Label:
 func button(s: String, action: Callable) -> Button:
 	var b := Button.new(); b.text=s; b.custom_minimum_size=Vector2(450,48)
 	b.alignment=HORIZONTAL_ALIGNMENT_LEFT; b.add_theme_font_size_override("font_size",19)
+	var cue := "ui_back" if s.begins_with("BACK") else ("ui_confirm" if (s.contains("→") or s.begins_with("RESUME") or s.begins_with("RESTART")) else "ui_click")
+	b.mouse_entered.connect(func(): game.sounds.ui("ui_hover"))
+	b.pressed.connect(func(): game.sounds.ui(cue))
 	b.pressed.connect(action); content.add_child(b)
 	return b
 func show_main() -> void:
@@ -56,10 +59,12 @@ func show_settings() -> void:
 	var sensitivity := HSlider.new(); sensitivity.min_value=0.5; sensitivity.max_value=3; sensitivity.step=0.1; sensitivity.value=game.sensitivity*1000
 	sensitivity.value_changed.connect(func(v): game.sensitivity=v/1000; game.save_settings())
 	content.add_child(sensitivity)
-	text("Sound volume",20)
-	var volume := HSlider.new(); volume.min_value=0; volume.max_value=1; volume.step=0.05; volume.value=game.sounds.volume
-	volume.value_changed.connect(func(v): game.sounds.volume=v; game.save_settings())
-	content.add_child(volume)
+	for entry in [["master","Master volume"],["sfx","Effects volume"],["ambient","Ambience volume"]]:
+		text(entry[1],20)
+		var volume := HSlider.new(); volume.min_value=0; volume.max_value=1; volume.step=0.05; volume.value=game.sounds.volumes[entry[0]]
+		volume.value_changed.connect(func(v):
+			game.sounds.set_volume(entry[0],v); game.save_settings(); game.sounds.ui("ui_tick"))
+		content.add_child(volume)
 	button("FULLSCREEN  /  TOGGLE",func(): DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_WINDOWED if DisplayServer.window_get_mode()==DisplayServer.WINDOW_MODE_FULLSCREEN else DisplayServer.WINDOW_MODE_FULLSCREEN))
 	button("BACK",show_main)
 func show_pause() -> void:

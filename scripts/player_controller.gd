@@ -8,7 +8,7 @@ var weapons: WeaponController
 var camera: Camera3D
 var dead_time := 0.0
 var sensitivity := 0.002
-var footsteps := 0.0
+var steps: FootstepEmitter
 var visual: CharacterAnimator
 var external_gun: Node3D
 var external_sword: Node3D
@@ -22,6 +22,7 @@ var damage_kick := 0.0
 func setup(g: Node3D, faction: int) -> void:
 	game=g; team=faction
 	name="PlayerController"
+	steps=FootstepEmitter.new(self,g)
 	var shape := CollisionShape3D.new()
 	var capsule := CapsuleShape3D.new()
 	capsule.radius=0.32; capsule.height=1.45
@@ -94,10 +95,7 @@ func _physics_process(delta: float) -> void:
 	damage_kick=move_toward(damage_kick,0,delta*2)
 	camera.rotation.z=lerpf(camera.rotation.z,damage_kick*0.025,delta*12)
 	weapons.position.x=lerpf(weapons.position.x,0.03 if aiming else 0.26,delta*10)
-	if input.length()>0 and is_on_floor():
-		footsteps-=delta
-		if footsteps<=0:
-			game.sounds.play_sound("step_"+game.arena.surface_at(global_position)); footsteps=0.32 if speed>5 else 0.47
+	steps.tick(delta,crouching)
 func _die(attacker: Node) -> void:
 	dead_time=3
 	if is_instance_valid(visual): visual.visible=false
@@ -110,16 +108,19 @@ func _die(attacker: Node) -> void:
 	death_body.reparent(anchor); death_body.transform=Transform3D.IDENTITY
 	death_body.die()
 	game.record_kill(attacker,self)
-	game.sounds.play_sound("death")
+	game.sounds.death_cue(self)
 func respawn() -> void:
 	if is_instance_valid(death_body): death_body.get_parent().queue_free()
+	var was_dead := health.value<=0
 	collision_layer=1; head_hitbox.collision_layer=2
 	crouching=false; crouch_blend=0
+	steps.reset()
 	global_position=game.spawns.location(team,game.actors)
 	rotation.y=atan2(global_position.x,global_position.z)
 	camera.rotation=Vector3.ZERO
 	velocity=Vector3.ZERO
 	health.reset(); health.protection=3.0
+	if was_dead: game.sounds.respawn_cue()
 	weapons.musket=Musket.new()
 	weapons.recoil=0; weapons.animation=0; weapons.switch_time=0
 	weapons.shown_weapon=weapons.selected
@@ -129,6 +130,7 @@ func respawn() -> void:
 
 func react_to_hit() -> void:
 	damage_kick=1
+	game.sounds.damage_cue(self)
 func head_height() -> float:
 	return visual.head_position().y if is_instance_valid(visual) else 1.64-crouch_blend*0.43
 func _exit_tree() -> void:

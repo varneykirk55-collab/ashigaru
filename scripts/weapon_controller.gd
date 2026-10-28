@@ -13,6 +13,10 @@ var shown_weapon := 0
 var hands: Node3D
 var hand_grips: Array[Node3D]=[]
 var hit_kind := ""
+## Reload sound cues, keyed to progress through the real 5 s reload timer (Musket.remaining).
+const RELOAD_CUES := [[0.0,"reload_bite"],[0.10,"reload_powder"],[0.32,"reload_ram_in"],[0.56,"reload_ram_tamp"],[0.78,"reload_prime"],[0.93,"reload_cock"]]
+var reload_stage := -1
+var audio_musket: Musket
 func setup(owner_actor: CharacterBody3D) -> void:
 	actor=owner_actor
 	gun_model=Geometry.weapon(self,false)
@@ -20,7 +24,8 @@ func setup(owner_actor: CharacterBody3D) -> void:
 	sword_model.visible=false
 	if actor is PlayerController: _build_hands()
 func tick(delta: float) -> void:
-	if musket.tick(delta): actor.game.sounds.play_sound("reload",actor.global_position)
+	musket.tick(delta)
+	_reload_audio()
 	katana.tick(delta)
 	recoil=move_toward(recoil,0,delta*5)
 	animation=maxf(0,animation-delta)
@@ -55,6 +60,7 @@ func switch_weapon() -> void:
 	if switch_time>0 or actor.health.value<=0: return
 	selected=1-selected
 	switch_time=0.36
+	actor.game.sounds.weapon_switch(actor,selected==1)
 func _build_hands() -> void:
 	hands=Node3D.new(); add_child(hands)
 	var sleeve := Geometry.mat(Color("292c30"))
@@ -67,16 +73,27 @@ func _build_hands() -> void:
 		Geometry.sphere(grip,Vector3.ZERO,Vector3(0.085,0.105,0.12),skin)
 		Geometry.sphere(grip,Vector3(side*-0.035,0.02,-0.025),Vector3(0.035,0.055,0.07),skin)
 func reload() -> void:
-	if musket.reload(): actor.game.sounds.play_sound("reload",actor.global_position)
+	if musket.reload(): _reload_audio()
+func _reload_audio() -> void:
+	# A new Musket instance (respawn) restarts the cue sequence; cues never repeat within one reload.
+	if musket!=audio_musket: audio_musket=musket; reload_stage=-1
+	if musket.remaining<=0:
+		reload_stage=-1
+		return
+	var progress := 1-musket.remaining/Musket.RELOAD_TIME
+	while reload_stage+1<RELOAD_CUES.size() and progress>=RELOAD_CUES[reload_stage+1][0]:
+		reload_stage+=1
+		actor.game.sounds.reload_cue(RELOAD_CUES[reload_stage][1],actor,selected==0)
 func attack(origin: Vector3, direction: Vector3) -> bool:
 	if actor.health.value<=0 or not actor.game.match_state.active or switch_time>0: return false
 	if selected == 0:
 		if not musket.fire():
+			if actor is PlayerController: actor.game.sounds.dry_fire(musket.remaining>0)
 			reload()
 			return false
 		actor.health.protection=0
 		recoil=1
-		actor.game.sounds.play_sound("shot",origin)
+		actor.game.sounds.gunshot(origin,actor is PlayerController,actor.get_instance_id())
 		actor.game.muzzle(origin+direction*1.0)
 		var result := DamageSystem.trace(actor,origin,direction,90)
 		if result and DamageSystem.hit(result.collider,100,actor):
@@ -84,16 +101,21 @@ func attack(origin: Vector3, direction: Vector3) -> bool:
 			hit_kind="HEADSHOT" if headshot else "HIT"
 			if result.collider.health.value<=0: hit_kind="HEADSHOT · KILL" if headshot else "KILL"
 			actor.game.feedback(actor,hit_kind,true)
-		elif result: actor.game.impact(result.position)
+			actor.game.sounds.bullet_impact(result.position,"flesh")
+		elif result:
+			actor.game.impact(result.position)
+			actor.game.sounds.bullet_impact(result.position,"flesh" if result.collider is CharacterBody3D else actor.game.arena.surface_at(result.position))
 		reload()
 		return true
 	if not katana.attack(): return false
 	actor.health.protection=0
 	animation=0.65
-	actor.game.sounds.play_sound("swing",origin)
 	var result := DamageSystem.trace(actor,origin,direction,Katana.RANGE)
-	if result and DamageSystem.hit(result.collider,Katana.DAMAGE,actor):
+	var connected: bool = result and DamageSystem.hit(result.collider,Katana.DAMAGE,actor)
+	if connected:
 		hit_kind="MELEE KILL" if result.collider.health.value<=0 else "MELEE HIT"
 		actor.game.feedback(actor,hit_kind,true)
-		actor.game.sounds.play_sound("impact",result.position)
+	var outcome := "flesh" if connected else ("world" if result and not result.collider is CharacterBody3D else "miss")
+	var hit_position: Vector3 = result.position if result else origin+direction*Katana.RANGE
+	actor.game.sounds.katana_attack(actor,origin,outcome,hit_position,actor.game.arena.surface_at(hit_position))
 	return true

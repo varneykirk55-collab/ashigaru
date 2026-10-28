@@ -1,0 +1,648 @@
+{
+ "bird_1": {
+  "group": "ambience",
+  "peak_db": -10.0,
+  "rate": 44100,
+  "seconds": 1.125
+ },
+ "bird_2": {
+  "group": "ambience",
+  "peak_db": -10.0,
+  "rate": 44100,
+  "seconds": 1.012
+ },
+ "bird_3": {
+  "group": "ambience",
+  "peak_db": -10.0,
+  "rate": 44100,
+  "seconds": 1.32
+ },
+ "bird_4": {
+  "group": "ambience",
+  "peak_db": -10.0,
+  "rate": 44100,
+  "seconds": 1.54
+ },
+ "bird_5": {
+  "group": "ambience",
+  "peak_db": -10.0,
+  "rate": 44100,
+  "seconds": 1.21
+ },
+ "bird_6": {
+  "group": "ambience",
+  "peak_db": -10.0,
+  "rate": 44100,
+  "seconds": 1.6
+ },
+ "body_fall": {
+  "group": "character",
+  "peak_db": -3.0,
+  "rate": 44100,
+  "seconds": 0.7
+ },
+ "bullet_flesh_1": {
+  "group": "impacts",
+  "peak_db": -3.0,
+  "rate": 44100,
+  "seconds": 1.1
+ },
+ "bullet_flesh_2": {
+  "group": "impacts",
+  "peak_db": -3.0,
+  "rate": 44100,
+  "seconds": 1.1
+ },
+ "bullet_soil_1": {
+  "group": "impacts",
+  "peak_db": -3.0,
+  "rate": 44100,
+  "seconds": 1.1
+ },
+ "bullet_soil_2": {
+  "group": "impacts",
+  "peak_db": -3.0,
+  "rate": 44100,
+  "seconds": 1.1
+ },
+ "bullet_soil_3": {
+  "group": "impacts",
+  "peak_db": -3.0,
+  "rate": 44100,
+  "seconds": 1.1
+ },
+ "bullet_stone_1": {
+  "group": "impacts",
+  "peak_db": -3.0,
+  "rate": 44100,
+  "seconds": 1.1
+ },
+ "bullet_stone_2": {
+  "group": "impacts",
+  "peak_db": -3.0,
+  "rate": 44100,
+  "seconds": 1.1
+ },
+ "bullet_stone_3": {
+  "group": "impacts",
+  "peak_db": -3.0,
+  "rate": 44100,
+  "seconds": 1.1
+ },
+ "bullet_wood_1": {
+  "group": "impacts",
+  "peak_db": -3.0,
+  "rate": 44100,
+  "seconds": 1.1
+ },
+ "bullet_wood_2": {
+  "group": "impacts",
+  "peak_db": -3.0,
+  "rate": 44100,
+  "seconds": 1.1
+ },
+ "bullet_wood_3": {
+  "group": "impacts",
+  "peak_db": -3.0,
+  "rate": 44100,
+  "seconds": 1.1
+ },
+ "cloth_move_1": {
+  "group": "footsteps",
+  "peak_db": -14.0,
+  "rate": 44100,
+  "seconds": 0.32
+ },
+ "cloth_move_2": {
+  "group": "footsteps",
+  "peak_db": -14.0,
+  "rate": 44100,
+  "seconds": 0.32
+ },
+ "courtyard_air_loop": {
+  "group": "ambience",
+  "loop": true,
+  "rate": 24000,
+  "rms_db": -30,
+  "seconds": 24.0
+ },
+ "creak_1": {
+  "group": "ambience",
+  "peak_db": -10.0,
+  "rate": 44100,
+  "seconds": 0.9
+ },
+ "creak_2": {
+  "group": "ambience",
+  "peak_db": -10.0,
+  "rate": 44100,
+  "seconds": 1.4
+ },
+ "creak_3": {
+  "group": "ambience",
+  "peak_db": -10.0,
+  "rate": 44100,
+  "seconds": 0.65
+ },
+ "creak_4": {
+  "group": "ambience",
+  "peak_db": -10.0,
+  "rate": 44100,
+  "seconds": 1.1
+ },
+ "death_1": {
+  "group": "character",
+  "peak_db": -3.0,
+  "rate": 44100,
+  "seconds": 1.477
+ },
+ "death_2": {
+  "group": "character",
+  "peak_db": -3.0,
+  "rate": 44100,
+  "seconds": 1.343
+ },
+ "foliage_loop": {
+  "group": "ambience",
+  "loop": true,
+  "rate": 32000,
+  "rms_db": -30,
+  "seconds": 28.0
+ },
+ "headshot_confirm": {
+  "group": "ui",
+  "peak_db": -5.0,
+  "rate": 44100,
+  "seconds": 0.35
+ },
+ "hit_confirm": {
+  "group": "ui",
+  "peak_db": -6.0,
+  "rate": 44100,
+  "seconds": 0.35
+ },
+ "katana_clank_soil_1": {
+  "group": "weapons",
+  "peak_db": -4.0,
+  "rate": 44100,
+  "seconds": 0.9
+ },
+ "katana_clank_soil_2": {
+  "group": "weapons",
+  "peak_db": -4.0,
+  "rate": 44100,
+  "seconds": 0.9
+ },
+ "katana_clank_stone_1": {
+  "group": "weapons",
+  "peak_db": -4.0,
+  "rate": 44100,
+  "seconds": 0.9
+ },
+ "katana_clank_stone_2": {
+  "group": "weapons",
+  "peak_db": -4.0,
+  "rate": 44100,
+  "seconds": 0.9
+ },
+ "katana_clank_wood_1": {
+  "group": "weapons",
+  "peak_db": -4.0,
+  "rate": 44100,
+  "seconds": 0.9
+ },
+ "katana_clank_wood_2": {
+  "group": "weapons",
+  "peak_db": -4.0,
+  "rate": 44100,
+  "seconds": 0.9
+ },
+ "katana_draw_1": {
+  "group": "weapons",
+  "peak_db": -6.0,
+  "rate": 44100,
+  "seconds": 1.52
+ },
+ "katana_draw_2": {
+  "group": "weapons",
+  "peak_db": -6.0,
+  "rate": 44100,
+  "seconds": 1.52
+ },
+ "katana_hit_1": {
+  "group": "weapons",
+  "peak_db": -2.0,
+  "rate": 44100,
+  "seconds": 0.45
+ },
+ "katana_hit_2": {
+  "group": "weapons",
+  "peak_db": -2.0,
+  "rate": 44100,
+  "seconds": 0.45
+ },
+ "katana_hit_3": {
+  "group": "weapons",
+  "peak_db": -2.0,
+  "rate": 44100,
+  "seconds": 0.45
+ },
+ "katana_swing_1": {
+  "group": "weapons",
+  "peak_db": -5.0,
+  "rate": 44100,
+  "seconds": 0.367
+ },
+ "katana_swing_2": {
+  "group": "weapons",
+  "peak_db": -5.0,
+  "rate": 44100,
+  "seconds": 0.358
+ },
+ "katana_swing_3": {
+  "group": "weapons",
+  "peak_db": -5.0,
+  "rate": 44100,
+  "seconds": 0.419
+ },
+ "katana_swing_light_1": {
+  "group": "weapons",
+  "peak_db": -9.0,
+  "rate": 44100,
+  "seconds": 0.26
+ },
+ "katana_swing_light_2": {
+  "group": "weapons",
+  "peak_db": -9.0,
+  "rate": 44100,
+  "seconds": 0.26
+ },
+ "katana_swing_light_3": {
+  "group": "weapons",
+  "peak_db": -9.0,
+  "rate": 44100,
+  "seconds": 0.26
+ },
+ "kill_confirm": {
+  "group": "ui",
+  "peak_db": -3.0,
+  "rate": 44100,
+  "seconds": 0.8
+ },
+ "land_soil_1": {
+  "group": "footsteps",
+  "peak_db": -4.0,
+  "rate": 44100,
+  "seconds": 0.75
+ },
+ "land_soil_2": {
+  "group": "footsteps",
+  "peak_db": -4.0,
+  "rate": 44100,
+  "seconds": 0.75
+ },
+ "land_stone_1": {
+  "group": "footsteps",
+  "peak_db": -4.0,
+  "rate": 44100,
+  "seconds": 0.75
+ },
+ "land_stone_2": {
+  "group": "footsteps",
+  "peak_db": -4.0,
+  "rate": 44100,
+  "seconds": 0.75
+ },
+ "land_wood_1": {
+  "group": "footsteps",
+  "peak_db": -4.0,
+  "rate": 44100,
+  "seconds": 0.75
+ },
+ "land_wood_2": {
+  "group": "footsteps",
+  "peak_db": -4.0,
+  "rate": 44100,
+  "seconds": 0.75
+ },
+ "match_defeat": {
+  "group": "ui",
+  "peak_db": -3.0,
+  "rate": 44100,
+  "seconds": 4.0
+ },
+ "match_end": {
+  "group": "ui",
+  "peak_db": -3.0,
+  "rate": 44100,
+  "seconds": 2.4
+ },
+ "match_start": {
+  "group": "ui",
+  "peak_db": -3.0,
+  "rate": 44100,
+  "seconds": 2.8
+ },
+ "match_victory": {
+  "group": "ui",
+  "peak_db": -3.0,
+  "rate": 44100,
+  "seconds": 4.4
+ },
+ "musket_dry_fire": {
+  "group": "weapons",
+  "peak_db": -6.0,
+  "rate": 44100,
+  "seconds": 0.25
+ },
+ "musket_lower": {
+  "group": "weapons",
+  "peak_db": -9.0,
+  "rate": 44100,
+  "seconds": 0.36
+ },
+ "musket_not_ready": {
+  "group": "weapons",
+  "peak_db": -10.0,
+  "rate": 44100,
+  "seconds": 0.25
+ },
+ "musket_raise": {
+  "group": "weapons",
+  "peak_db": -7.0,
+  "rate": 44100,
+  "seconds": 0.42
+ },
+ "musket_shot_1": {
+  "group": "weapons",
+  "peak_db": -2.0,
+  "rate": 44100,
+  "seconds": 2.175
+ },
+ "musket_shot_2": {
+  "group": "weapons",
+  "peak_db": -2.0,
+  "rate": 44100,
+  "seconds": 2.226
+ },
+ "musket_shot_3": {
+  "group": "weapons",
+  "peak_db": -2.0,
+  "rate": 44100,
+  "seconds": 2.259
+ },
+ "musket_shot_far_1": {
+  "group": "weapons",
+  "peak_db": -3.0,
+  "rate": 44100,
+  "seconds": 3.413
+ },
+ "musket_shot_far_2": {
+  "group": "weapons",
+  "peak_db": -3.0,
+  "rate": 44100,
+  "seconds": 3.365
+ },
+ "pain_1": {
+  "group": "character",
+  "peak_db": -5.0,
+  "rate": 44100,
+  "seconds": 0.281
+ },
+ "pain_2": {
+  "group": "character",
+  "peak_db": -5.0,
+  "rate": 44100,
+  "seconds": 0.281
+ },
+ "pain_3": {
+  "group": "character",
+  "peak_db": -5.0,
+  "rate": 44100,
+  "seconds": 0.291
+ },
+ "reload_bite_1": {
+  "group": "weapons",
+  "peak_db": -8.0,
+  "rate": 44100,
+  "seconds": 0.7
+ },
+ "reload_bite_2": {
+  "group": "weapons",
+  "peak_db": -8.0,
+  "rate": 44100,
+  "seconds": 0.7
+ },
+ "reload_cock_1": {
+  "group": "weapons",
+  "peak_db": -5.0,
+  "rate": 44100,
+  "seconds": 0.55
+ },
+ "reload_cock_2": {
+  "group": "weapons",
+  "peak_db": -5.0,
+  "rate": 44100,
+  "seconds": 0.55
+ },
+ "reload_powder_1": {
+  "group": "weapons",
+  "peak_db": -8.0,
+  "rate": 44100,
+  "seconds": 0.75
+ },
+ "reload_powder_2": {
+  "group": "weapons",
+  "peak_db": -8.0,
+  "rate": 44100,
+  "seconds": 0.75
+ },
+ "reload_prime_1": {
+  "group": "weapons",
+  "peak_db": -7.0,
+  "rate": 44100,
+  "seconds": 0.6
+ },
+ "reload_prime_2": {
+  "group": "weapons",
+  "peak_db": -7.0,
+  "rate": 44100,
+  "seconds": 0.6
+ },
+ "reload_ram_in_1": {
+  "group": "weapons",
+  "peak_db": -8.0,
+  "rate": 44100,
+  "seconds": 0.85
+ },
+ "reload_ram_in_2": {
+  "group": "weapons",
+  "peak_db": -8.0,
+  "rate": 44100,
+  "seconds": 0.85
+ },
+ "reload_ram_tamp_1": {
+  "group": "weapons",
+  "peak_db": -6.0,
+  "rate": 44100,
+  "seconds": 0.9
+ },
+ "reload_ram_tamp_2": {
+  "group": "weapons",
+  "peak_db": -6.0,
+  "rate": 44100,
+  "seconds": 0.9
+ },
+ "respawn": {
+  "group": "character",
+  "peak_db": -9.0,
+  "rate": 44100,
+  "seconds": 0.9
+ },
+ "room_tone_loop": {
+  "group": "ambience",
+  "loop": true,
+  "rate": 24000,
+  "rms_db": -32,
+  "seconds": 20.0
+ },
+ "step_soil_1": {
+  "group": "footsteps",
+  "peak_db": -7.0,
+  "rate": 44100,
+  "seconds": 0.5
+ },
+ "step_soil_2": {
+  "group": "footsteps",
+  "peak_db": -7.0,
+  "rate": 44100,
+  "seconds": 0.5
+ },
+ "step_soil_3": {
+  "group": "footsteps",
+  "peak_db": -7.0,
+  "rate": 44100,
+  "seconds": 0.5
+ },
+ "step_soil_4": {
+  "group": "footsteps",
+  "peak_db": -7.0,
+  "rate": 44100,
+  "seconds": 0.5
+ },
+ "step_soil_5": {
+  "group": "footsteps",
+  "peak_db": -7.0,
+  "rate": 44100,
+  "seconds": 0.5
+ },
+ "step_stone_1": {
+  "group": "footsteps",
+  "peak_db": -7.0,
+  "rate": 44100,
+  "seconds": 0.5
+ },
+ "step_stone_2": {
+  "group": "footsteps",
+  "peak_db": -7.0,
+  "rate": 44100,
+  "seconds": 0.5
+ },
+ "step_stone_3": {
+  "group": "footsteps",
+  "peak_db": -7.0,
+  "rate": 44100,
+  "seconds": 0.5
+ },
+ "step_stone_4": {
+  "group": "footsteps",
+  "peak_db": -7.0,
+  "rate": 44100,
+  "seconds": 0.5
+ },
+ "step_stone_5": {
+  "group": "footsteps",
+  "peak_db": -7.0,
+  "rate": 44100,
+  "seconds": 0.5
+ },
+ "step_wood_1": {
+  "group": "footsteps",
+  "peak_db": -7.0,
+  "rate": 44100,
+  "seconds": 0.5
+ },
+ "step_wood_2": {
+  "group": "footsteps",
+  "peak_db": -7.0,
+  "rate": 44100,
+  "seconds": 0.5
+ },
+ "step_wood_3": {
+  "group": "footsteps",
+  "peak_db": -7.0,
+  "rate": 44100,
+  "seconds": 0.5
+ },
+ "step_wood_4": {
+  "group": "footsteps",
+  "peak_db": -7.0,
+  "rate": 44100,
+  "seconds": 0.5
+ },
+ "step_wood_5": {
+  "group": "footsteps",
+  "peak_db": -7.0,
+  "rate": 44100,
+  "seconds": 0.5
+ },
+ "ui_back": {
+  "group": "ui",
+  "peak_db": -5.0,
+  "rate": 44100,
+  "seconds": 0.5
+ },
+ "ui_click": {
+  "group": "ui",
+  "peak_db": -5.0,
+  "rate": 44100,
+  "seconds": 0.5
+ },
+ "ui_confirm": {
+  "group": "ui",
+  "peak_db": -5.0,
+  "rate": 44100,
+  "seconds": 0.5
+ },
+ "ui_hover": {
+  "group": "ui",
+  "peak_db": -8.0,
+  "rate": 44100,
+  "seconds": 0.5
+ },
+ "ui_pause": {
+  "group": "ui",
+  "peak_db": -5.0,
+  "rate": 44100,
+  "seconds": 0.5
+ },
+ "ui_tick": {
+  "group": "ui",
+  "peak_db": -8.0,
+  "rate": 44100,
+  "seconds": 0.5
+ },
+ "wind_gust": {
+  "group": "ambience",
+  "peak_db": -14.0,
+  "rate": 44100,
+  "seconds": 4.5
+ },
+ "wind_loop": {
+  "group": "ambience",
+  "loop": true,
+  "rate": 24000,
+  "rms_db": -26,
+  "seconds": 24.0
+ }
+}

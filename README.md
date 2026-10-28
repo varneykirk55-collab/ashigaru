@@ -77,7 +77,7 @@ Both presets embed the PCK for single-file desktop distribution and exclude sour
 - `MatchManager`, `SpawnManager`: team scores, clock, match completion and separated faction spawn areas.
 - `HUD`, `MainMenu`: presentation, faction selection, settings, pause and results.
 - `Arena`, `Geometry`: replaceable courtyard geometry and provisional faction silhouettes. `Geometry.weapon` is the weapon model adapter.
-- `SoundBank`: local/spatial audio. All included audio is original synthesized audio; see `LICENSES.md`.
+- `SoundBank`, `Ambience`, `FootstepEmitter`: audio service (buses, voice pools, positional gunfire, staged reload cues), palace soundscape and speed-driven footsteps. All included audio is original synthesized audio (`tools/synth_audio.py`); see `docs/AUDIO.md` and `LICENSES.md`.
 
 No networking is implemented. Attack/damage and match state are separated from UI and input to make a later authoritative networking layer possible; the current code is not network-ready.
 
