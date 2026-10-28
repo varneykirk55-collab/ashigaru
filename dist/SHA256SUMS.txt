@@ -1,0 +1,2 @@
+9746a66be9fc237daed8cfb1ae44ae00e2e4ae54dc54ab90c199e2da6253d25b  SamuraiWithMuskets-Linux.zip
+fb4badbe6d9cc17f548e4998937257b7f80ef74819811593ad15a32cb70fb99d  SamuraiWithMuskets-Windows.zip
