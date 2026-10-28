@@ -1,0 +1,29 @@
+{
+  "source_sha256": {
+    "assets/characters/Ronin.glb": "ed2eab7cb3e645643c837a46ea3e11a41c4a0797594dddd604f7c620ac3a1212",
+    "source_assets/Ronin.blend": "dc250a8080d2332659bad7257fad675e3d966b1d9a49503d5fcfa50cfdc5c0c3"
+  },
+  "triangles": 93590,
+  "meshes": 14,
+  "bones": 58,
+  "materials": 12,
+  "embedded_images": 26,
+  "weighted_vertices_audited": 68331,
+  "max_weight_sum_error": 1.341104507446289e-07,
+  "max_joint_index": 57,
+  "source_blender_header": "BLENDER17-01v0502 (Zstandard compressed; incompatible with installed Blender 4.3.2)",
+  "source_channels_per_clip": 174,
+  "imported_tracks_per_clip": 56,
+  "animations": {
+    "Idle": 3.966666666666667,
+    "Walk": 1.0333333333333334,
+    "Run": 0.6333333333333333,
+    "Musket_Aim": 1.5,
+    "Musket_Fire": 1.2,
+    "Musket_Reload": 11.133333333333333,
+    "Katana_Slash": 1.7333333333333334,
+    "Hit_React": 0.7333333333333333,
+    "Death": 2.6666666666666665
+  },
+  "automatic_character_lod_generation": false
+}

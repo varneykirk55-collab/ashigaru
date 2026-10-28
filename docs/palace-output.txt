@@ -32,5 +32,5 @@ PASS: bots enter palace interiors during autonomous combat
 PASS: bots select cover while reloading
 PASS: both teams score on expanded battlefield
 PASS: complete ten-combatant match reaches results
-PALACE METRICS: scores=[11, 12] interior_bots=9 cover_choices=32
+PALACE METRICS: scores=[12, 7] interior_bots=9 cover_choices=24
 PALACE RESULT: 28 checks, 0 failures

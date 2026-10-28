@@ -1,3 +1,5 @@
+> Historical palace-map pass. The current character integration and latest validation are documented in [RONIN.md](RONIN.md).
+
 # Palace of Ash — map overhaul
 
 The canonical ASHIGARU project now uses a 150 × 150 metre fictional palace complex. This replaces the 40 × 40 metre courtyard in the same project and branch; no second game or repository was created.

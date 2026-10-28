@@ -1,3 +1,5 @@
+> Historical animation pass. The supplied rōnin asset has since been integrated; see [current rōnin report](RONIN.md).
+
 # Animation and combat presentation pass
 
 This update refines the existing project. The arena, navigation/target-selection logic, supplied musket and katana assets, and original audio files are preserved. No controller support or networking was added.

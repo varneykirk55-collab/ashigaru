@@ -9,3 +9,5 @@
 No licensing claim is made on the user's supplied models beyond their authorized use in this project. Decide the repository's overall source-code license before distributing the project publicly.
 
 Palace pass: `assets/palace/*`, source Blender modules, garden details and all added footstep/wind/interior audio are original project-generated content. No external environment textures or audio sources were added. The added synthesized audio is also offered under CC0 1.0 Universal.
+
+Rōnin integration: `assets/characters/Ronin.glb` and `source_assets/Ronin.blend` were supplied by the user as the Claude-generated character. No separate redistribution license accompanied these files; their original geometry, materials, textures, rig and source clips are preserved for the requested project integration. No ownership or additional third-party licensing claim is made.

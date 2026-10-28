@@ -13,6 +13,7 @@ var death_start_position := Vector3.ZERO
 var motion_state := "idle"
 var weapon_socket: Node3D
 var imported_player: AnimationPlayer
+var ronin: RoninPresentation
 var clip_map := {"idle":"idle", "walk":"walk", "sprint":"sprint", "crouch":"crouch", "crouch_walk":"crouch_walk", "aim":"aim", "fire":"fire", "reload":"reload", "katana_ready":"katana_ready", "katana_attack":"katana_attack", "hit":"hit", "death":"death"}
 func joint(key: String, parent: Node3D, pos: Vector3) -> Node3D:
 	var n := Node3D.new(); n.name=key; parent.add_child(n); n.position=pos; joints[key]=n
@@ -21,9 +22,8 @@ func setup(team: int, asset: PackedScene = null) -> void:
 	weapon_socket=Node3D.new(); weapon_socket.name="WeaponSocket"; add_child(weapon_socket)
 	weapon_socket.position=Vector3(0.27,1.23,-0.22)
 	if asset:
-		var imported := asset.instantiate(); add_child(imported)
-		var players := imported.find_children("*","AnimationPlayer",true,false)
-		if not players.is_empty(): imported_player=players[0]
+		ronin=RoninPresentation.new(); add_child(ronin); ronin.setup(self,asset)
+		imported_player=ronin.player
 		return
 	var cloth := Geometry.mat(Color("191d22") if team==1 else Color("343a40"))
 	var armor := Geometry.mat(Color("702f28"),0.55,0.45)
@@ -60,16 +60,20 @@ func setup(team: int, asset: PackedScene = null) -> void:
 		Geometry.sphere(head,Vector3(0,0.27,0.025),Vector3(0.34,0.2,0.32),cloth)
 		var lapel := Geometry.box(torso,Vector3(0,0.4,-0.255),Vector3(0.055,0.34,0.035),Geometry.mat(Color("777064"))); lapel.rotation.z=0.5
 func react() -> void:
-	if death_time<0: damage_pulse=1.0
+	if death_time<0:
+		damage_pulse=1.0
+		if is_instance_valid(ronin): ronin.hit()
 func die() -> void:
 	if death_time>=0: return
 	death_start_position=position
 	death_time=0; death_finished=false; motion_state="death"
-	_play_clip("death")
+	if is_instance_valid(ronin): ronin.die()
+	else: _play_clip("death")
 func reset_pose() -> void:
 	death_time=-1; death_finished=false; damage_pulse=0; crouch_blend=0
 	position=Vector3.ZERO; rotation=Vector3.ZERO; scale=Vector3.ONE
 	weapon_socket.rotation=Vector3.ZERO
+	if is_instance_valid(ronin): ronin.reset_pose()
 	for n in joints.values(): n.rotation=Vector3.ZERO
 func _play_clip(state: String) -> void:
 	if not is_instance_valid(imported_player): return
@@ -79,6 +83,16 @@ func _play_clip(state: String) -> void:
 func pose(key: String, target: Vector3, weight: float) -> void:
 	if joints.has(key): joints[key].rotation=joints[key].rotation.lerp(target,weight)
 func tick(delta: float, speed: float, crouching: bool, weapon: WeaponController, aiming: bool = true) -> void:
+	if is_instance_valid(ronin):
+		if death_time>=0:
+			death_time+=delta
+			position.y=lerpf(death_start_position.y,0,smoothstep(0,0.3,death_time))
+		crouch_blend=lerpf(crouch_blend,1.0 if crouching else 0.0,1-exp(-12*delta))
+		if death_time<0: position.y=-0.43*crouch_blend
+		ronin.tick(delta,speed,crouching,weapon,death_time>=0,aiming)
+		motion_state=ronin.state
+		death_finished=ronin.death_done
+		return
 	var blend := 1.0-exp(-12.0*delta)
 	if death_time>=0:
 		death_time+=delta
@@ -120,3 +134,7 @@ func tick(delta: float, speed: float, crouching: bool, weapon: WeaponController,
 	pose("left_elbow",Vector3(0.55+reload_wave*0.45,0,0),blend)
 	pose("right_elbow",Vector3(0.35,0,0),blend)
 	weapon_socket.position=Vector3(0.27,1.23, -0.22)+Vector3(0,sin(phase)*moving*0.015,0)
+
+func head_position() -> Vector3:
+	if is_instance_valid(ronin): return ronin.head_position()
+	return Vector3(0,1.64+position.y,0)

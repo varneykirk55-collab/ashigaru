@@ -2,7 +2,9 @@
 
 A standalone Godot 4 first-person team deathmatch foundation. Select Samurai or Rōnin, fight in the Palace of Ash with a single-shot musket and a katana, die, respawn, and play through a score- or timer-ended match. Five combatants per side; nine autonomous bots fight the player and one another.
 
-This is a functional gameplay prototype, **not finished realistic character or environment art**. See [limitations](docs/TESTING.md).
+The rōnin faction uses the supplied full-quality skinned model and authored clips. Samurai, first-person hands and environment art still need polish. See [rōnin integration and validation](docs/RONIN.md).
+
+This is a functional gameplay prototype, **not finished character or environment art**. See [limitations](docs/TESTING.md).
 
 ![First-person musket view](docs/palace-exterior.png)
 
@@ -79,4 +81,4 @@ Both presets embed the PCK for single-file desktop distribution and exclude sour
 
 No networking is implemented. Attack/damage and match state are separated from UI and input to make a later authoritative networking layer possible; the current code is not network-ready.
 
-See [palace screenshots, navigation footage and performance report](docs/PALACE.md), [animation status and footage](docs/ANIMATION.md), [test evidence and limitations](docs/TESTING.md) and the original [project brief](docs/BRIEF.md).
+See [rōnin screenshots, footage and import report](docs/RONIN.md), [palace screenshots, navigation footage and performance report](docs/PALACE.md), [animation status and footage](docs/ANIMATION.md), [test evidence and limitations](docs/TESTING.md) and the original [project brief](docs/BRIEF.md).

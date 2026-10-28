@@ -33,6 +33,7 @@ func setup(g: Node3D, faction: int) -> void:
 	col.shape=capsule; col.position.y=0.725; add_child(col)
 	health=HealthComponent.new(); add_child(health); health.died.connect(_die)
 	head_hitbox=DamageSystem.add_head_hitbox(self)
+	if team==1 and character_asset==null: character_asset=preload("res://assets/characters/Ronin.glb")
 	visual=Geometry.warrior(self,team,character_asset)
 	weapons=WeaponController.new(); visual.weapon_socket.add_child(weapons)
 	weapons.position=Vector3.ZERO; weapons.setup(self)
@@ -47,8 +48,8 @@ func _physics_process(delta: float) -> void:
 		return
 	if not game.match_state.active: return
 	weapons.tick(delta)
-	visual.tick(delta,Vector2(velocity.x,velocity.z).length(),crouching,weapons)
-	head_hitbox.position.y=head_height()
+	visual.tick(delta,Vector2(velocity.x,velocity.z).length(),crouching,weapons,is_instance_valid(target) and target.health.value>0)
+	head_hitbox.position=visual.head_position()
 	body_shape.shape.height=1.45+visual.position.y
 	body_shape.position.y=body_shape.shape.height/2
 	think-=delta; fire_delay-=delta; cover_time=maxf(0,cover_time-delta)
@@ -125,6 +126,9 @@ func respawn() -> void:
 	global_position=game.spawns.location(team,game.actors)
 	velocity=Vector3.ZERO
 	health.reset(); health.protection=3.0; weapons.musket=Musket.new()
+	weapons.recoil=0; weapons.animation=0; weapons.switch_time=0
+	weapons.shown_weapon=weapons.selected
+	weapons.gun_model.visible=weapons.selected==0; weapons.sword_model.visible=weapons.selected==1
 	visual.visible=true; collision_layer=1
 	visual.reset_pose(); crouching=false; head_hitbox.collision_layer=2
 	think=0; fire_delay=1
@@ -132,7 +136,7 @@ func respawn() -> void:
 func react_to_hit() -> void:
 	visual.react()
 func head_height() -> float:
-	return 1.64+visual.position.y
+	return visual.head_position().y
 
 func _patrol(delta: float) -> void:
 	var direction := Vector3.ZERO

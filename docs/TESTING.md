@@ -1,3 +1,5 @@
+> Current character integration adds 34 rōnin-specific checks to the 80 gameplay/palace checks: **114 checks total, zero failures**. See [rōnin validation and limitations](RONIN.md), [rōnin raw output](ronin-output.txt) and [five-model performance](ronin-performance.txt). The palace-only observations below are retained as map-pass context.
+
 # Current validation
 
 The palace pass runs 80 checks: the existing 52 combat/animation regressions and 28 palace-specific checks. Both display-backed suites passed with zero failures or skips. See [combat output](integration-output.txt), [palace output](palace-output.txt), and the [palace report](PALACE.md) for scope, footage and limitations.
