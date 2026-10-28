@@ -48,3 +48,23 @@ No attribution is required for the audio. If you later add Sonniss packs, check 
 * Bullet-by-bullet whizz/crack for near misses was not added.
 * Windows build was exported and its package contents verified, but not run natively; the Linux export was smoke-tested with a full match.
 * Headless tests run with the Dummy audio driver: they prove events, routing, voice behaviour and levels in the mix path, not that a particular speaker output is pleasant.
+
+## Level measurements (recorded demo mix)
+
+Measured with ffmpeg `volumedetect` on the 118 s Godot movie-writer recording (`dist/ASHIGARU-Audio-Demo.mp4`, final code):
+
+| Span | Mean | Peak |
+|---|---|---|
+| Whole clip | -25.7 dB | -2.9 dB (no clipping; Master hard limiter ceiling -1 dB) |
+| 5-8 s (menu, ambience + UI stinger) | -17.4 dB | -3.4 dB |
+| 20-30 s (footsteps, walk/sprint/crouch) | -30.0 dB | -3.7 dB |
+| 60-70 s (musket section) | -31.1 dB | -9.8 dB |
+| 95-100 s (enemy gunfire/distance) | -38.8 dB | -25.4 dB |
+
+These are numbers only; nobody has listened to the result.
+
+## Build
+
+* Windows and Linux exports were produced with Godot 4.6.3 export templates. The Windows executable was scanned: all 107 imported audio streams and `sound_bank.gd`, `ambience.gd`, `footstep_emitter.gd` are inside the package.
+* The Linux export ran a complete 5v5 match under a virtual display with the Dummy audio driver ("EXPORTED MATCH SMOKE: PASS"). The Windows build was not run natively.
+* `dist/SamuraiWithMuskets-Windows.zip` / `-Linux.zip` hold the executable, PLAY.txt, licenses and these audio notes; checksums are in `dist/SHA256SUMS.txt`.
