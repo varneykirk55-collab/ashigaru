@@ -1,14 +1,20 @@
-# First-person combat and true ADS
+# First-person combat and clean-barrel ADS
 
 This pass replaces the player's primitive hands with the supplied rōnin's actual skinned human arms, hands, fingers and kimono sleeves. Both playable factions use this first-person rig. Enemy characters, their animation adapter, the palace, AI, menu and audio systems retain their existing implementation.
 
 The changes are on `feat/first-person-ads`, prepared for review against `main`. The Windows archive is a build of that branch; it has not been merged or run on native Windows.
 
+## Clean-barrel correction
+
+Removed the entire added front/rear sight assembly. The original musket mesh, materials, low leaf/blade and flintlock mechanism are untouched. ADS now raises the weapon approximately 7.4 cm higher than the prior aiming pose with a 0.26° pitch adjustment, placing the original barrel profile on the camera aiming line. The same interpolation, crosshair fade, camera ray, hand rig, reload choreography, recoil and switching remain in use. No gameplay or other animation systems changed.
+
+The hip-fire and ADS screenshots below and the Windows archive are updated for this correction. The other screenshots and 27-second overhaul video are historical and show the superseded sight attachments.
+
 ## Presentation
 
 `FirstPersonViewmodel` selects 11,416 arm/sleeve triangles from the existing imported rōnin mesh. It retains their vertex attributes, skin binds, materials and textures and the original 58-bone skeleton. Only a new triangle index list is created in memory, cached across matches. It does not edit or re-export the supplied GLB or Blender source. Two-bone arm solving follows weapon grips, and the original finger bones articulate around the stock or hilt. The dedicated transparent viewmodel viewport preserves the existing world camera and prevents nearby palace geometry from cutting through hands/weapons. It has its own modest lighting rig.
 
-Right mouse smoothly raises the musket so the open rear notch and front blade top share the camera center line. These small sight additions are first-person attachments to the original gun; its mesh and the bots' guns are unchanged. The normal reticle fades out as ADS settles. Hit/kill markers remain brief confirmation after a hit. Walking sway is heavily reduced in ADS. Crouching retains the same eye-relative sight geometry.
+Right mouse smoothly raises and centers the original musket so the player looks along its barrel. Reference points on its existing low-profile leaf/blade align with the camera center line; no extra sight meshes are created. The normal reticle fades out as ADS settles. Hit/kill markers remain brief confirmation after a hit. Walking sway is heavily reduced in ADS. Crouching retains the same eye-relative sight geometry.
 
 Shots retain the existing eye-origin hitscan. The sight line and shot line coincide; a nearby wall between the eye and target still blocks damage. The visual muzzle flash follows the presented barrel. There is no second barrel ray that silently redirects shots into nearby cover.
 
@@ -35,7 +41,7 @@ These are screenshots from the running palace scene, with the HUD hidden for ins
 | State | Screenshot |
 | --- | --- |
 | Musket hip ready | [Rest](fp-rest.png) |
-| Aligned rear/front iron sights | [ADS](fp-ads.png) |
+| Clean view along the original barrel | [ADS](fp-ads.png) |
 | Recoil and muzzle flash | [Fire](fp-fire.png) |
 | Support hand reaching off the gun | [Pouch](fp-reload-pouch.png) |
 | Loading gesture | [Load](fp-reload-load.png) |
@@ -43,13 +49,15 @@ These are screenshots from the running palace scene, with the HUD hidden for ins
 | Slash | [Attack](fp-slash.png) |
 | Mid-switch dip | [Switch](fp-switch.png) |
 
-[27-second footage](../dist/ASHIGARU-FirstPerson-Combat.mp4) is a deterministic staged first-person demonstration recorded by Godot Movie Maker at 1280×720, 30 FPS, with existing game audio. It is not a real-time performance benchmark or human playtest.
+[Historical 27-second overhaul footage](../dist/ASHIGARU-FirstPerson-Combat.mp4) retains the superseded sight assembly. It is a deterministic staged first-person demonstration recorded by Godot Movie Maker at 1280×720, 30 FPS, with existing game audio. It is not a real-time performance benchmark or human playtest.
 
 ## Validation
 
-**147 checks passed with zero failures**: [33 first-person checks](first-person-output.txt), [52 combat checks](first-person-combat-output.txt), [28 palace checks](first-person-palace-output.txt), and [34 rōnin checks](first-person-ronin-output.txt). The display-backed suites had no skipped checks. Baseline autonomous combat completed with scores 18–24; the palace match ended 10–12 with all nine bots visiting the interior, and the rōnin match ended 9–10. The [Linux exported-binary smoke](first-person-export-smoke-output.txt) also passed (7–5).
+**87 checks passed for this correction, with zero failures or skips**: [35 first-person checks](first-person-output.txt) and [52 existing combat checks](first-person-combat-output.txt). Two new assertions verify that no extra sight assembly is attached and that ADS physically moves through intermediate weapon poses. Aimed hits, camera/barrel alignment, hip-fire, reticle fade, moving/crouched ADS, grips, five-second reload, background reload, katana switching and respawn passed. The autonomous 5v5 combat match completed with scores 23–20.
 
-The [Windows build](../dist/ASHIGARU-FirstPerson-Windows.zip) exports successfully with embedded PCK; ZIP CRC and file contents are verified against the build folder. Native Windows execution remains untested. `tests/first_person.gd` exercises the actual running Godot game, input events, physics raycasts, damage and ammunition clock. It covers source geometry/skin, both weapon grips, right-click ADS, both sights projected to center, reticle fade, movement while aiming, aimed hit/score, recoil/flash, articulated reload stages, measured five-second duration, background reload with a working katana, resuming current reload, nearby wall occlusion, crouch/sprint, death/respawn and menu cleanup.
+The [28 palace checks](first-person-palace-output.txt), [34 rōnin checks](first-person-ronin-output.txt) and [Linux exported-binary smoke](first-person-export-smoke-output.txt) are retained as evidence from the previous overhaul, not rerun for this focused correction.
+
+The [Windows build](../dist/ASHIGARU-FirstPerson-Windows.zip) exports successfully with embedded PCK; ZIP CRC and file contents are verified against the build folder. Native Windows execution remains untested. `tests/first_person.gd` exercises the actual running Godot game, input events, physics raycasts, damage and ammunition clock. It covers source geometry/skin, both weapon grips, right-click ADS, original barrel aiming references projected to center, reticle fade, movement while aiming, aimed hit/score, recoil/flash, articulated reload stages, measured five-second duration, background reload with a working katana, resuming current reload, nearby wall occlusion, crouch/sprint, death/respawn and menu cleanup.
 
 Reproduce with Godot 4.6.3 and a working desktop display:
 

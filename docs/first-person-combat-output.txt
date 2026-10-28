@@ -54,6 +54,6 @@ PASS: crouched death starts without a vertical pose pop
 PASS: reload contract remains five seconds
 PASS: bots autonomously traverse arena
 PASS: both bot teams independently score kills over 180 seconds
-BOT SCORES: [18, 24]
+BOT SCORES: [23, 20]
 PASS: autonomous combat reaches score-limit results without forced kills
 RESULT: 52 checks, 0 failures, 0 skipped

@@ -2,15 +2,15 @@
 
 A standalone Godot 4 first-person team deathmatch foundation. Select Samurai or Rōnin, fight in the Palace of Ash with a single-shot musket and a katana, die, respawn, and play through a score- or timer-ended match. Five combatants per side; nine autonomous bots fight the player and one another.
 
-The rōnin faction uses the supplied full-quality skinned model and authored clips. First-person presentation now reuses its modeled arms and finger rig, with aligned musket iron sights and articulated reload handling. See [first-person combat and validation](docs/FIRST_PERSON.md) and [rōnin integration](docs/RONIN.md). Artist polish remains for grips, wrist/sleeve deformation, Samurai and environment art.
+The rōnin faction uses the supplied full-quality skinned model and authored clips. First-person presentation now reuses its modeled arms and finger rig, with clean-barrel musket ADS and articulated reload handling. See [first-person combat and validation](docs/FIRST_PERSON.md) and [rōnin integration](docs/RONIN.md). Artist polish remains for grips, wrist/sleeve deformation, Samurai and environment art.
 
 This is a functional gameplay prototype, **not finished character or environment art**. See [limitations](docs/TESTING.md).
 
-![First-person musket iron sights](docs/fp-ads.png)
+![First-person view along the musket barrel](docs/fp-ads.png)
 
 ## Play
 
-[Current branch Windows build](dist/ASHIGARU-FirstPerson-Windows.zip) · [27-second combat footage](dist/ASHIGARU-FirstPerson-Combat.mp4) · [Report](docs/FIRST_PERSON.md)
+[Current branch Windows build](dist/ASHIGARU-FirstPerson-Windows.zip) · [Historical overhaul footage (superseded sights)](dist/ASHIGARU-FirstPerson-Combat.mp4) · [Report](docs/FIRST_PERSON.md)
 
 Previous main builds: [Windows](dist/SamuraiWithMuskets-Windows.zip) · [Linux](dist/SamuraiWithMuskets-Linux.zip). The first-person branch is prepared for review and is not merged into main.
 

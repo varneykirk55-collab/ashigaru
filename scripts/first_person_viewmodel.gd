@@ -1,8 +1,11 @@
 class_name FirstPersonViewmodel
 extends Node
 ## Camera-space presentation only. Ammunition, damage and action clocks stay in WeaponController.
-const REAR_SIGHT := Vector3(0,0.205,-0.65)
-const FRONT_SIGHT := Vector3(0,0.205,-1.35)
+# Reference points on the ORIGINAL low leaf/blade; no added sight geometry.
+const AIM_REAR := Vector3(0,0.128,-0.561)
+const AIM_FRONT := Vector3(0,0.124,-1.432)
+const ADS_PITCH := 0.00459239
+const ADS_HEIGHT := 0.130575
 static var arm_meshes: Dictionary = {}
 var controller: WeaponController
 var rig: Node3D
@@ -42,7 +45,6 @@ func setup(owner_weapon: WeaponController) -> void:
 	var fill := OmniLight3D.new(); space.add_child(fill); fill.position=Vector3(-0.3,0.3,0.3); fill.omni_range=4; fill.light_energy=0.65
 	var light := DirectionalLight3D.new(); space.add_child(light); light.rotation_degrees=Vector3(-38,-35,0); light.light_color=Color("ffdfaa"); light.light_energy=0.95
 	controller.gun_model.reparent(space,false); controller.sword_model.reparent(space,false)
-	_build_sights()
 	rig=preload("res://assets/characters/Ronin.glb").instantiate(); space.add_child(rig)
 	rig.position=Vector3(0,-1.82,-0.16); rig.rotation.y=PI
 	skeleton=rig.find_children("*","Skeleton3D",true,false)[0]
@@ -89,14 +91,6 @@ func _extract_arms(part: MeshInstance3D) -> ArrayMesh:
 		result.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES,arrays)
 		result.surface_set_material(result.get_surface_count()-1,part.get_active_material(surface))
 	return result
-func _build_sights() -> void:
-	var steel := Geometry.mat(Color("282b2c"),0.8,0.45)
-	Geometry.box(controller.gun_model,Vector3(0,0.121,-0.65),Vector3(0.014,0.10,0.018),steel)
-	# Open notch. The gap and front blade top are precisely on the same sight line.
-	Geometry.box(controller.gun_model,Vector3(0,0.181,-0.65),Vector3(0.032,0.026,0.018),steel)
-	for side in [-1,1]: Geometry.box(controller.gun_model,Vector3(side*0.012,0.203,-0.65),Vector3(0.008,0.016,0.018),steel)
-	Geometry.box(controller.gun_model,Vector3(0,0.142,-1.35),Vector3(0.035,0.09,0.035),steel)
-	Geometry.box(controller.gun_model,Vector3(0,0.192,-1.35),Vector3(0.009,0.026,0.018),steel)
 func _process(_delta: float) -> void:
 	if not is_instance_valid(controller.actor): return
 	var actor: PlayerController=controller.actor
@@ -121,8 +115,8 @@ func update(delta: float) -> void:
 	gait+=delta*(11 if speed>5 else 7)
 	var bob := sin(gait)*minf(speed,7)*0.0018*(1-ads*0.95)
 	var dip := sin(clampf(controller.switch_time/0.36,0,1)*PI)*0.48
-	var pos := Vector3(0.13,-0.27,0.05).lerp(Vector3(0,-REAR_SIGHT.y,0.0),ads)
-	var rot := Vector3.ZERO
+	var pos := Vector3(0.13,-0.27,0.05).lerp(Vector3(0,-ADS_HEIGHT,0.0),ads)
+	var rot := Vector3(ADS_PITCH*ads,0,0)
 	var loading := controller.musket.remaining>0 and controller.shown_weapon==0
 	var progress := 1-controller.musket.remaining/Musket.RELOAD_TIME
 	var support := Vector3(-0.055,-0.035,-0.60)

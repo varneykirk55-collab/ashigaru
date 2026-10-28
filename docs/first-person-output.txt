@@ -10,11 +10,13 @@ PASS: modeled arm/hand geometry replaces primitive spheres and cylinders
 ARM TRIANGLES: 11416
 PASS: both musket palms converge onto weapon grips
 PASS: isolated transparent viewmodel avoids wall clipping and does not intercept input
+PASS: musket has only its original model and muzzle flash, with no added sight assembly
+PASS: ADS physically raises/centers the gun through intermediate poses
 PASS: real right mouse input raises musket into ADS
-PASS: front blade top and rear notch sight line project to screen center
+PASS: original low-profile barrel aiming references project to screen center
 PASS: hip reticle fades away during settled ADS
 PASS: movement works during ADS with less than 1.5 pixels of sight drift
-PASS: ADS camera ray hits the enemy behind the aligned sights and scores the kill
+PASS: ADS camera ray hits the enemy along the original barrel and scores the kill
 PASS: firing produces weapon recoil and a brief muzzle flash
 PASS: successful firing starts the original five-second automatic reload
 PASS: reload support hand leaves the gun and reaches toward the pouch
@@ -37,4 +39,4 @@ PASS: respawn restores a clean, ready viewmodel after the existing death delay
 PASS: holding right mouse through death does not restore stale ADS
 PASS: fresh right-click after respawn enters ADS normally
 PASS: returning to menu hides the viewmodel overlay
-RESULT: 33 checks, 0 failures
+RESULT: 35 checks, 0 failures

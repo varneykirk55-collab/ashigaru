@@ -22,7 +22,9 @@ func run():
  for i in range(90): vm.update(1.0/60)
  game.player.camera.fov=55
  await shot("ads")
- print("SIGHTS ",vm.view_camera.unproject_position(w.gun_model.transform*vm.REAR_SIGHT)," ",vm.view_camera.unproject_position(w.gun_model.transform*vm.FRONT_SIGHT)," GRIP ERROR ",vm.palm_error)
+ if "--ads-only" in OS.get_cmdline_user_args():
+  Input.action_release("aim"); game.free(); await frames(2); quit(); return
+ print("ORIGINAL BARREL AIM ",vm.view_camera.unproject_position(w.gun_model.transform*vm.AIM_REAR)," ",vm.view_camera.unproject_position(w.gun_model.transform*vm.AIM_FRONT)," GRIP ERROR ",vm.palm_error)
  w.recoil=1; vm.update(1.0/60)
  await shot("fire")
  Input.action_release("aim"); w.recoil=0; w.musket.loaded=false; w.musket.remaining=3.3
